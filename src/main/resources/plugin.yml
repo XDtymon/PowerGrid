@@ -1,0 +1,9 @@
+name: PowerGrid
+prefix: PG
+version: '${version}'
+
+main: com.jakisniekot.powerGrid.MainPlgin
+api-version: '26.2'
+load: POSTWORLD
+
+authors: [ JakisNieKot ]

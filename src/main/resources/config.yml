@@ -1,0 +1,18 @@
+#
+#
+#
+#
+#
+
+#Languages:
+# - pl
+# - en
+lang: "en"
+
+#Databases:
+# - MYSQL
+databaseType: MYSQL
+databaseConnection:
+  url: "jdbc:mysql://localhost:3306/nazwa_bazy"
+  user: "root"
+  password: "haslo"

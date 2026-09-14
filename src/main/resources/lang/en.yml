@@ -1,0 +1,6 @@
+errors:
+  database:
+    noDatabaseConnection:
+      - "--------------------"
+      - "PowerGrid"
+      - ""
