@@ -1,11 +1,14 @@
 package com.jakisniekot.powerGrid;
 
+import com.jakisniekot.powerGrid.command.mainCommandExecutor;
 import com.jakisniekot.powerGrid.database.DatabaseConnection;
 import com.jakisniekot.powerGrid.item.ItemFileHandler;
+import com.jakisniekot.powerGrid.item.ItemParser;
 import com.jakisniekot.powerGrid.lang.LangFileHandler;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.List;
@@ -22,6 +25,8 @@ public final class MainPlugin extends JavaPlugin {
     private LangFileHandler langFileHandler;
     private ItemFileHandler itemFileHandler;
     private DatabaseConnection database;
+
+    private Map<String, ItemStack> items;
 
     private static final Pattern HEX_PATTERN = Pattern.compile("&#([A-Fa-f0-9]{6})");
     private final MiniMessage miniMessage = MiniMessage.miniMessage();
@@ -44,8 +49,11 @@ public final class MainPlugin extends JavaPlugin {
         //Database
         database.connect();
 
+        //Items
+        items = new ItemParser(plugin).parseItemsFromConfig();
+
         //Commands
-        //getCommand("")
+        getCommand("pg").setExecutor(new mainCommandExecutor(plugin));
 
 
     }
@@ -109,12 +117,20 @@ public final class MainPlugin extends JavaPlugin {
         return itemFileHandler;
     }
 
+    public ItemStack getItemFromID(String id) {
+        return items.get(id);
+    }
+
+    public boolean isExistingItem(String id) {
+        return items.containsKey(id);
+    }
+
     public FileConfiguration getLang() {
         return langFileHandler.getLang();
     }
 
-    public Component colorizerLegacy(String key) {
-        return LegacyComponentSerializer.legacyAmpersand().deserialize(key);
+    public Component colorizerLegacy(String text) {
+        return LegacyComponentSerializer.legacyAmpersand().deserialize(text);
     }
 
     public Component getMessage(String key, Map<String, String> placeholders) {
@@ -129,6 +145,4 @@ public final class MainPlugin extends JavaPlugin {
         String msg = getLang().getString(key, "Missing message: " + key);
         return colorizerLegacy(msg);
     }
-
-
 }

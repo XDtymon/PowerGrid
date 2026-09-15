@@ -1,0 +1,93 @@
+package com.jakisniekot.powerGrid.item;
+
+import com.jakisniekot.powerGrid.KeyUtil;
+import com.jakisniekot.powerGrid.MainPlugin;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
+
+import java.util.List;
+import java.util.UUID;
+
+public class PowerItemTypeStats {
+
+    private MainPlugin plugin;
+
+    private PowerItemType powerItemType;
+    private ConfigurationSection itemSection;
+
+    public PowerItemTypeStats(
+            MainPlugin plugin,
+            PowerItemType powerItemType,
+            ConfigurationSection itemSection
+    ) {
+        this.plugin = plugin;
+    }
+
+    public ItemMeta addStats(ItemMeta itemMeta) {
+        PersistentDataContainer pdc = itemMeta.getPersistentDataContainer();
+
+        pdc.set(KeyUtil.UUIDKey(), PersistentDataType.STRING, UUID.randomUUID().toString());
+
+        if (powerItemType == PowerItemType.WIRE) {
+            //CONNECTION DISTANCE
+            int maxConnectionDistance = 0;
+            maxConnectionDistance = itemSection.getInt("maxConnectionDistance");
+
+            if (maxConnectionDistance == 0) {
+                return null;
+            } else {
+                pdc.set(KeyUtil.MaxConnectionDistanceKey(), PersistentDataType.INTEGER, maxConnectionDistance);
+            }
+
+            //WATT PER SECOND
+            int wattPerSecond = 0;
+            wattPerSecond = itemSection.getInt("wattPerSecond");
+
+            if (wattPerSecond == 0) {
+                if (!(itemSection.getBoolean("forceWPS"))) return null;
+            } else {
+                pdc.set(KeyUtil.WattPerSecondKey(), PersistentDataType.INTEGER, wattPerSecond);
+            }
+        } else if (powerItemType == PowerItemType.CONNECTOR) {
+            //MAX CONNECTION AMOUNT
+            int maxConnectonAmount = 0;
+            maxConnectonAmount = itemSection.getInt("maxConnectionAmount");
+
+            if (maxConnectonAmount == 0) {
+                return null;
+            }
+
+            //ALLOWED WIRE TYPES & LIST TYPE
+            List<String> allowedWireTypes = itemSection.getStringList("allowedWireTypes");
+            boolean blacklist = itemSection.getBoolean("blacklist");
+            if (allowedWireTypes.isEmpty()) {
+                pdc.set(KeyUtil.AllowedTypesListTypeKey(), PersistentDataType.BOOLEAN, true);
+            } else {
+                pdc.set(KeyUtil.AllowedTypesKey(), PersistentDataType.LIST.strings(), allowedWireTypes);
+
+                /*
+                // Odczyt
+public List<String> loadList(PersistentDataContainer pdc) {
+    List<String> list = pdc.get(key, PersistentDataType.LIST.strings());
+    return list != null ? list : new ArrayList<>();
+}
+
+// Sprawdzenie czy istnieje
+public boolean hasList(PersistentDataContainer pdc) {
+    return pdc.has(key, PersistentDataType.LIST.strings());
+}
+                 */
+
+
+
+
+                pdc.set(KeyUtil.AllowedTypesListTypeKey(), PersistentDataType.BOOLEAN, blacklist);
+            }
+
+        }
+
+        return itemMeta;
+    }
+}

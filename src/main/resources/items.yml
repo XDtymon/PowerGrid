@@ -1,8 +1,22 @@
+copper_wire:
+  itemName: ""
+  lore: ""
+  customModelData: 0
+  material: ""
+
+  powerItemType: WIRE
+  maxConnectionDistance: 16
+
+
+
 copper_connector:
   itemName: ""
   lore: ""
   customModelData: 0
   material: ""
 
-
-  customItem: ""
+  powerItemType: CONNECTOR
+  maxConnectionAmount: 3
+  allowedWireTypes:
+    - copper_wire
+  blacklist: false
