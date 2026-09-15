@@ -1,6 +1,27 @@
-errors:
+info:
+  startup:
+    - "--------------------"
+    - "PowerGrid"
+    - "Version: {version}"
+
+    - "--------------------"
+    -
   database:
-    noDatabaseConnection:
-      - "--------------------"
-      - "PowerGrid"
-      - ""
+    - "Database: "
+    - "- User: {user}"
+    - "- Password: {password}"
+    - "- User: {user}"
+
+
+success:
+  database:
+    databaseConnectionEstablished: "Successfully connected to the database!"
+
+errors:
+  items:
+    noSuchItem: "Item {ID} isnt registered properly / doesnt exist!"
+
+    noMaterial: "Item {ID} does not have its material set! Forcing material to STONE"
+    nonExistentMaterial: "Item {ID} has a non-existent material set! Forcing material to STONE"
+  database:
+    noDatabaseConnection: "Connection with the database failed!"
