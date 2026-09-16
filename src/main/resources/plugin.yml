@@ -1,14 +1,14 @@
 name: PowerGrid
-prefix: PG
+prefix: PowerGrid
 version: '${version}'
 
-main: com.jakisniekot.powerGrid.MainPlgin
+main: com.jakisniekot.powerGrid.MainPlugin
 api-version: '26.2'
 load: POSTWORLD
 
 authors: [ JakisNieKot ]
 
-command:
+commands:
   powergrid:
     aliases:
       - pg

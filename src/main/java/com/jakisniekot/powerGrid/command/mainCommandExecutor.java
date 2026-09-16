@@ -1,6 +1,9 @@
 package com.jakisniekot.powerGrid.command;
 
 import com.jakisniekot.powerGrid.MainPlugin;
+import com.sun.jdi.IntegerType;
+import net.kyori.adventure.text.event.ClickEvent;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -25,31 +28,47 @@ public class mainCommandExecutor implements CommandExecutor {
     ) {
         if (sender instanceof Player player) {
 
-            if (args.length == 0) {
+            switch (args[0].toLowerCase()) {
+                case "give":
 
-            } else if (args.length == 1) {
+                    //pg give <item> (player) (amount)
 
-            } else if (args.length == 2) {
+                    String item = null;
+                    Player target = null;
+                    int amount = 0;
 
-            } else if (args.length == 3) {
-                switch (args[0].toLowerCase()) {
-                    case "give":
 
-                        int amount = Integer.parseInt(args[2]);
-                        if (amount == 0) {
-                            amount = 1;
-                        }
+                    if (args.length >= 2) {
                         if (plugin.isExistingItem(args[1])) {
-                            giveItem(player, amount, args[1]);
+                            item = args[1];
                         } else {
-
+                            return true;
                         }
+                    }
 
-                        break;
-                }
-            } else if (args.length == 4) {
+                    if (args.length >= 3) {
+                        if (Bukkit.getPlayer(args[2]) != null) {
+                            target = Bukkit.getPlayer(args[2]);
+                        } else {
+                            return true;
+                        }
+                    }
 
+                    if (args.length == 4) {
+                        try {
+                            amount = Integer.parseInt(args[3]);
+                        } catch (NumberFormatException e) {
+                            return true;
+                        }
+                    }
+
+                    if (args.length == 2) giveItem(player, 1, item);
+                    if (args.length == 3) giveItem(target, 1, item);
+                    if (args.length == 4) giveItem(target, amount, item);
+
+                    break;
             }
+
 
         } else {
 

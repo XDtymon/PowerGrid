@@ -23,13 +23,11 @@ public class DatabaseConnection {
         String user = config.getString("databaseConnection.user");
         String password = config.getString("databaseConnection.password");
 
-        try {
-            try (Connection conn = DriverManager.getConnection(url, user, password)) {
+
+        try (Connection conn = DriverManager.getConnection(url, user, password)) {
                 System.out.println("success.database.databaseConnectionEstablished");
-            }
         } catch (SQLException e) {
             plugin.printLogs("errors.database.noDatabaseConnection");
-            e.printStackTrace();
         }
     }
 }

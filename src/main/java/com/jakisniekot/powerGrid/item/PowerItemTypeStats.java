@@ -2,13 +2,13 @@ package com.jakisniekot.powerGrid.item;
 
 import com.jakisniekot.powerGrid.KeyUtil;
 import com.jakisniekot.powerGrid.MainPlugin;
+import net.kyori.adventure.text.Component;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class PowerItemTypeStats {
 
@@ -50,6 +50,23 @@ public class PowerItemTypeStats {
             } else {
                 pdc.set(KeyUtil.WattPerSecondKey(), PersistentDataType.INTEGER, wattPerSecond);
             }
+
+            List<Component> lore = new ArrayList<>();
+
+            Map<String, String> placeholder = new HashMap<>();
+            placeholder.put("%maxConnectionDistance%", String.valueOf(maxConnectionDistance));
+            placeholder.put("%wattPerSecond%", String.valueOf(wattPerSecond));
+
+            if (itemSection.getStringList("lore").isEmpty()) {
+                for (String line : itemSection.getStringList("lore")) {
+                    lore.add(plugin.colorizerLegacy(line, placeholder));
+                }
+
+                itemMeta.lore(lore);
+            }
+
+            itemMeta.lore(lore);
+
         } else if (powerItemType == PowerItemType.CONNECTOR) {
             //MAX CONNECTION AMOUNT
             int maxConnectonAmount = 0;
@@ -85,6 +102,22 @@ public boolean hasList(PersistentDataContainer pdc) {
 
                 pdc.set(KeyUtil.AllowedTypesListTypeKey(), PersistentDataType.BOOLEAN, blacklist);
             }
+
+            List<Component> lore = new ArrayList<>();
+
+            Map<String, String> placeholder = new HashMap<>();
+            placeholder.put("%maxConnectonAmount%", String.valueOf(maxConnectonAmount));
+            placeholder.put("%allowedWireTypes%", String.valueOf(allowedWireTypes));
+
+            if (itemSection.getStringList("lore").isEmpty()) {
+                for (String line : itemSection.getStringList("lore")) {
+                    lore.add(plugin.colorizerLegacy(line, placeholder));
+                }
+
+                itemMeta.lore(lore);
+            }
+
+            itemMeta.lore(lore);
 
         }
 

@@ -2,6 +2,7 @@ package com.jakisniekot.powerGrid.item;
 
 import com.jakisniekot.powerGrid.KeyUtil;
 import com.jakisniekot.powerGrid.MainPlugin;
+import com.jakisniekot.powerGrid.util.ItemMaterial;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -29,10 +30,15 @@ public class ItemParser {
     }
 
     public Map<String, ItemStack> parseItemsFromConfig() {
+        plugin.printLogs("info.parsing.start");
+
         Map<String, ItemStack> itemStack = new HashMap<>();
         for (String ID : itemFileHandler.getItemConfig().getKeys(false)) {
             itemStack.put(ID, parseItem(ID));
         }
+
+        plugin.printLogs("info.parsing.end");
+
         return itemStack;
     }
 
@@ -40,12 +46,11 @@ public class ItemParser {
         Map<String, String> placeholder = new HashMap<>();
         placeholder.put("{ID}", configItemID);
 
-        boolean error = false;
+        boolean errors = false;
 
         FileConfiguration itemConfig = itemFileHandler.getItemConfig();
         ConfigurationSection itemSection = itemConfig.getConfigurationSection(configItemID);
 
-        Material material = null;
         Component itemName = null;
         List<Component> lore = new ArrayList<>();
         PowerItemType powerItemType = null;
@@ -53,64 +58,50 @@ public class ItemParser {
 
 
         if (itemSection == null) {
-            plugin.printLogs("error.items.noSuchItem", placeholder);
-            error = true;
+            plugin.printLogs("errors.items.noSuchItem", placeholder);
+            errors = true;
             return errorItem();
         }
 
 
 
 
-        String materialString = itemConfig.getString("material");
+        String materialString = itemSection.getString("material");
 
         if (materialString == null) {
-            plugin.printLogs("error.items.noMaterial", placeholder);
-            error = true;
+            plugin.printLogs("errors.items.noMaterial", placeholder);
+            errors = true;
         } else {
             try {
-                material = Material.valueOf(materialString);
-                itemStack = new ItemStack(material);
+                itemStack = ItemMaterial.simple(materialString);
                 itemMeta = itemStack.getItemMeta();
             } catch (IllegalArgumentException e) {
-                plugin.printLogs("error.items.nonExistentMaterial", placeholder);
-                error = true;
+                errors = true;
             }
         }
 
 
-        if (itemConfig.getString("itemName") != null) {
-            itemName = plugin.colorizerLegacy(itemConfig.getString("itemName"));
+        if (itemSection.getString("itemName") != null) {
+            itemName = plugin.colorizerLegacy(itemSection.getString("itemName"));
             itemMeta.displayName(itemName);
-        }
-
-        if (itemConfig.getStringList("lore").isEmpty()) {
-            for (String line : itemConfig.getStringList("lore")) {
-                lore.add(plugin.colorizerLegacy(line));
-            }
-
-            itemMeta.lore(lore);
-        }
-
-        if (itemConfig.getBoolean("cmdForce")) {
-            itemMeta.setCustomModelData(itemConfig.getInt("customModelData"));
         } else {
-            if (itemConfig.getInt("customModelData") != 0) {
-                itemMeta.setCustomModelData(itemConfig.getInt("customModelData"));
-            } else {
-                plugin.printLogs("error.items.noCustomModelDataWarning", placeholder);
-            }
+            errors = true;
         }
+
+        if (itemSection.getKeys(false).contains("customModelData")) {
+            itemMeta.setCustomModelData(itemSection.getInt("customModelData"));
+        }
+
 
         PersistentDataContainer pdc = itemMeta.getPersistentDataContainer();
-        pdc.set(KeyUtil.TypeKey(), PersistentDataType.STRING, powerItemType.toString());
 
 
-        if (itemConfig.getString("powerItemType") != null) {
-            if (itemConfig.getString("powerItemType") == "NONE") {
-
+        if (itemSection.getString("powerItemType") != null) {
+            if (itemSection.getString("powerItemType") == "NONE") {
             } else {
                 try {
-                    powerItemType = PowerItemType.valueOf(itemConfig.getString("powerItemType"));
+                    powerItemType = PowerItemType.valueOf(itemSection.getString("powerItemType"));
+                    pdc.set(KeyUtil.TypeKey(), PersistentDataType.STRING, powerItemType.toString());
 
                     PowerItemTypeStats powerItemTypeStats = new PowerItemTypeStats(plugin, powerItemType, itemSection);
 
@@ -121,26 +112,25 @@ public class ItemParser {
                     }
 
                 } catch (IllegalArgumentException e) {
-                    plugin.printLogs("error.items.noCustomModelDataWarning", placeholder);
+                    plugin.printLogs("errors.items.noCustomModelDataWarning", placeholder);
 
                 }
             }
         }
 
 
-
-
+        if (!errors) plugin.printLogs("info.parsing.successful", placeholder);
 
         itemStack.setItemMeta(itemMeta);
         return itemStack;
     }
 
     private ItemStack errorItem() {
-        ItemStack errorItemStack = new ItemStack(Material.BARRIER);
-        ItemMeta errorItemMeta = errorItemStack.getItemMeta();
-        errorItemMeta.itemName(plugin.colorizerLegacy("&cERROR &8- &7Check console"));
-        errorItemStack.setItemMeta(itemMeta);
-        return errorItemStack;
+        ItemStack errorsItemStack = new ItemStack(Material.BARRIER);
+        ItemMeta errorsItemMeta = errorsItemStack.getItemMeta();
+        errorsItemMeta.itemName(plugin.colorizerLegacy("&cERROR &8- &7Check console"));
+        errorsItemStack.setItemMeta(itemMeta);
+        return errorsItemStack;
     }
 
 

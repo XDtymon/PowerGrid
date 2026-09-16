@@ -11,8 +11,10 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import net.kyori.adventure.text.Component;
@@ -53,7 +55,7 @@ public final class MainPlugin extends JavaPlugin {
         items = new ItemParser(plugin).parseItemsFromConfig();
 
         //Commands
-        getCommand("pg").setExecutor(new mainCommandExecutor(plugin));
+        getCommand("powergrid").setExecutor(new mainCommandExecutor(plugin));
 
 
     }
@@ -70,43 +72,53 @@ public final class MainPlugin extends JavaPlugin {
     public void printLogs(String messageID) {
         Object object;
         if (getLang().getStringList(messageID).isEmpty()) {
-            object = getLang().getStringList(messageID);
-        } else {
             object = getLang().getString(messageID);
+        } else {
+            object = getLang().getStringList(messageID);
         }
 
         if (object instanceof String s) {
-            System.out.println(s);
+            plugin.getLogger().log(Level.INFO, s);
         } else {
             assert object != null;
             for (String line : (List<String>) object) {
-                System.out.println(line);
+                plugin.getLogger().log(Level.INFO, line);
+
             }
         }
     }
 
     public void printLogs(String messageID, Map<String, String> placeholders) {
-        String msg = getLang().getString(messageID, "Missing message: " + messageID);
+
         Object object;
         if (getLang().getStringList(messageID).isEmpty()) {
-            object = getLang().getStringList(messageID);
-        } else {
             object = getLang().getString(messageID);
+        } else {
+            object = getLang().getStringList(messageID);
+        }
+
+        if (object == null)  {
+            plugin.getLogger().log(Level.INFO, ("Missing message: "+messageID));
+            return;
         }
 
         if (object instanceof String s) {
-            System.out.println(s);
+            for (Map.Entry<String, String> entry : placeholders.entrySet()) {
+                s = s.replace(entry.getKey(), entry.getValue());
+            }
+            plugin.getLogger().log(Level.INFO, s);
         } else {
-            assert object != null;
             for (String line : (List<String>) object) {
-                System.out.println(line);
+                for (Map.Entry<String, String> entry : placeholders.entrySet()) {
+                    line = line.replace(entry.getKey(), entry.getValue());
+                }
+                plugin.getLogger().log(Level.INFO, line);
+
             }
         }
-        for (Map.Entry<String, String> entry : placeholders.entrySet()) {
-            msg = msg.replace(entry.getKey(), entry.getValue());
-        }
 
-        System.out.println(msg);
+
+;
     }
 
     public LangFileHandler getLangFileHandler() {
@@ -115,6 +127,10 @@ public final class MainPlugin extends JavaPlugin {
 
     public ItemFileHandler getItemFileHandler() {
         return itemFileHandler;
+    }
+
+    public List<String> getItemsList() {
+        return new ArrayList<>(items.keySet());
     }
 
     public ItemStack getItemFromID(String id) {
@@ -130,6 +146,13 @@ public final class MainPlugin extends JavaPlugin {
     }
 
     public Component colorizerLegacy(String text) {
+        return LegacyComponentSerializer.legacyAmpersand().deserialize(text);
+    }
+
+    public Component colorizerLegacy(String text, Map<String, String> placeholders) {
+        for (Map.Entry<String, String> entry : placeholders.entrySet()) {
+            text = text.replace(entry.getKey(), entry.getValue());
+        }
         return LegacyComponentSerializer.legacyAmpersand().deserialize(text);
     }
 

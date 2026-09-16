@@ -11,7 +11,8 @@ lang: "en"
 
 #Databases:
 # - MYSQL
-databaseType: MYSQL
+# - FILE
+databaseType: FILE
 databaseConnection:
   url: "jdbc:mysql://localhost:3306/nazwa_bazy"
   user: "root"

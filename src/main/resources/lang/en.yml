@@ -1,4 +1,9 @@
 info:
+  parsing:
+    start: "Item parsing started!"
+    end: "Item parsing ended!"
+
+    successful: "Item {ID} registered successfully!"
   startup:
     - "--------------------"
     - "PowerGrid"
@@ -19,11 +24,12 @@ success:
 
 errors:
   items:
+
+
     noSuchItem: "Item {ID} isnt registered properly / doesnt exist!"
 
     noMaterial: "Item {ID} does not have its material set! Forcing material to STONE"
     nonExistentMaterial: "Item {ID} has a non-existent material set! Forcing material to STONE"
-    noCustomModelDataWarning: "Item {ID} has its CustomModelData set as 0! Add cmdForce: true if this shouldve happened"
     noPowerItemType: "Item {ID} doesnt have its PowerItemType set! Add powerItemType: NONE if this shouldve happened"
 
   database:
