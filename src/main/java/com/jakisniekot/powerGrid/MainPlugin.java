@@ -5,6 +5,7 @@ import com.jakisniekot.powerGrid.database.DatabaseConnection;
 import com.jakisniekot.powerGrid.item.ItemFileHandler;
 import com.jakisniekot.powerGrid.item.ItemParser;
 import com.jakisniekot.powerGrid.lang.LangFileHandler;
+import com.jakisniekot.powerGrid.util.ConsoleColors;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -12,6 +13,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -51,6 +53,14 @@ public final class MainPlugin extends JavaPlugin {
         //Database
         database.connect();
 
+        //MOTD
+        Map<String, String> placeholder = new HashMap<>();
+        placeholder.put("{version}", plugin.getPluginMeta().getVersion());
+        placeholder.put("{fileHandlerStatus}", database.getStatus());
+        printLogs("info.startup", placeholder);
+
+
+
         //Items
         items = new ItemParser(plugin).parseItemsFromConfig();
 
@@ -58,6 +68,10 @@ public final class MainPlugin extends JavaPlugin {
         getCommand("powergrid").setExecutor(new mainCommandExecutor(plugin));
 
 
+
+
+
+        //Tests
     }
 
     @Override
@@ -78,11 +92,11 @@ public final class MainPlugin extends JavaPlugin {
         }
 
         if (object instanceof String s) {
-            plugin.getLogger().log(Level.INFO, s);
+            plugin.getLogger().log(Level.INFO, ConsoleColors.colorize(s));
         } else {
             assert object != null;
             for (String line : (List<String>) object) {
-                plugin.getLogger().log(Level.INFO, line);
+                plugin.getLogger().log(Level.INFO, ConsoleColors.colorize(line));
 
             }
         }
@@ -106,19 +120,39 @@ public final class MainPlugin extends JavaPlugin {
             for (Map.Entry<String, String> entry : placeholders.entrySet()) {
                 s = s.replace(entry.getKey(), entry.getValue());
             }
-            plugin.getLogger().log(Level.INFO, s);
+            plugin.getLogger().log(Level.INFO, ConsoleColors.colorize(s));
         } else {
             for (String line : (List<String>) object) {
                 for (Map.Entry<String, String> entry : placeholders.entrySet()) {
                     line = line.replace(entry.getKey(), entry.getValue());
                 }
-                plugin.getLogger().log(Level.INFO, line);
+                plugin.getLogger().log(Level.INFO, ConsoleColors.colorize(line));
 
             }
         }
+    }
+
+    public String stringReplacer(String text, Map<String, String> placeholders) {
+        for (Map.Entry<String, String> entry : placeholders.entrySet()) {
+            text = text.replace(entry.getKey(), entry.getValue());
+        }
+
+        return text;
+    }
+
+    public List<String> listReplacer(List<String> list, Map<String, String> placeholders) {
+        List<String> newList = new ArrayList<>();
+
+        for (String text : list) {
+            for (Map.Entry<String, String> entry : placeholders.entrySet()) {
+                text = text.replace(entry.getKey(), entry.getValue());
+            }
+
+            newList.add(ConsoleColors.colorize(text));
+        }
 
 
-;
+        return newList;
     }
 
     public LangFileHandler getLangFileHandler() {
@@ -168,4 +202,6 @@ public final class MainPlugin extends JavaPlugin {
         String msg = getLang().getString(key, "Missing message: " + key);
         return colorizerLegacy(msg);
     }
+
+
 }

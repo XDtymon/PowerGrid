@@ -1,36 +1,52 @@
 info:
   parsing:
-    start: "Item parsing started!"
-    end: "Item parsing ended!"
+    start: "&fItem parsing &astarted&7!"
+    end: "&fItem parsing &cended&7!"
 
-    successful: "Item {ID} registered successfully!"
+    successful: "&aItem {ID} registered successfully!"
   startup:
-    - "--------------------"
-    - "PowerGrid"
-    - "Version: {version}"
-
-    - "--------------------"
-    -
+    - ""
+    - "&8========================================================================"
+    - "                                                                        "
+    - '&#FF9B00&l  ____    ___   __        __ _____   ____    ____   ____   ___  ____    '
+    - '&#E58608&l |  _ \  / _ \  \ \      / /| ____| |  _ \  / ___| |  _ \ |_ _||  _ \   '
+    - '&#CB7110&l | |_) || | | |  \ \ /\ / / |  _|   | |_) || |  _  | |_) | | | | | | |  '
+    - '&#B05B18&l |  __/ | |_| |   \ V  V /  | |___  |  _ < | |_| | |  _ <  | | | |_| |  '
+    - '&#964620&l |_|     \___/     \_/\_/   |_____| |_| \_\ \____| |_| \_\|___||____/   '
+    - "                                                                        "
+    - "                        &7Version: &e{version}                          "
+    - "                           &8&oBy JakisNieKot                              "
+    - ""
+    - "    {fileHandlerStatus}               "
+    - ""
+    - "&8========================================================================"
+    - ""
   database:
-    - "Database: "
-    - "- User: {user}"
-    - "- Password: {password}"
-    - "- User: {user}"
+    status:
+      true: "&aONLINE"
+      false: "&cOFFLINE"
 
+      exitCodes:
+#     1045 - Access Denied
+#     1049 - NonExistent DB
+#     0 - Timeout
 
-success:
-  database:
-    databaseConnectionEstablished: "Successfully connected to the database!"
+        1045: "&4ACCESS DENIED"
+        1049: "&4DB DOES NOT EXIST"
+        0: "&4TIMED OUT"
+
+      fatal: "&4FATAL ERROR"
+
+    motd: "&#FF9B00Database: {status} &8| &7DatabaseName: &f{name} &8| &7User: &f{user} &8| &7Password: &f{password} &8| &7Port: &f{port}"
+
 
 errors:
   items:
 
 
-    noSuchItem: "Item {ID} isnt registered properly / doesnt exist!"
+    noSuchItem: "&cItem {ID} isnt registered properly / doesnt exist!"
 
-    noMaterial: "Item {ID} does not have its material set! Forcing material to STONE"
-    nonExistentMaterial: "Item {ID} has a non-existent material set! Forcing material to STONE"
-    noPowerItemType: "Item {ID} doesnt have its PowerItemType set! Add powerItemType: NONE if this shouldve happened"
+    noMaterial: "&cItem {ID} does not have its material set! Forcing material to STONE"
+    nonExistentMaterial: "&cItem {ID} has a non-existent material set! Forcing material to STONE"
+    noPowerItemType: "&cItem {ID} doesnt have its PowerItemType set! Add powerItemType: NONE if this shouldve happened"
 
-  database:
-    noDatabaseConnection: "Connection with the database failed!"
