@@ -16,6 +16,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -160,6 +161,10 @@ public final class MainPlugin extends JavaPlugin {
 
 
         return newList;
+    }
+
+    public Connection getConnection() {
+        return database.getConnection();
     }
 
     public LangFileHandler getLangFileHandler() {
