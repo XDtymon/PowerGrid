@@ -7,7 +7,22 @@ api-version: '26.2'
 load: POSTWORLD
 
 authors: [ JakisNieKot ]
-
+permissions:
+  powergrid.admin:
+    default: op
+    children:
+      - powergrid.place.connector
+      - powergrid.place.wire
+      - powergrid.place.relay
+      - powergrid.command.give
+  powergrid.place.connector:
+    default: false
+  powergrid.place.wire:
+    default: false
+  powergrid.place.relay:
+    default: false
+  powergrid.command.give:
+    default: false
 commands:
   powergrid:
     aliases:

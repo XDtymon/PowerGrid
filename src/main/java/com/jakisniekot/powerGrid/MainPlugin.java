@@ -1,15 +1,19 @@
 package com.jakisniekot.powerGrid;
 
 import com.jakisniekot.powerGrid.command.mainCommandExecutor;
+import com.jakisniekot.powerGrid.command.mainCommandTabber;
 import com.jakisniekot.powerGrid.database.DatabaseConnection;
 import com.jakisniekot.powerGrid.item.ItemFileHandler;
 import com.jakisniekot.powerGrid.item.ItemParser;
 import com.jakisniekot.powerGrid.lang.LangFileHandler;
+import com.jakisniekot.powerGrid.listener.BlockPlaceListener;
 import com.jakisniekot.powerGrid.util.ConsoleColors;
+import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
@@ -59,15 +63,18 @@ public final class MainPlugin extends JavaPlugin {
         placeholder.put("{fileHandlerStatus}", database.getStatus());
         printLogs("info.startup", placeholder);
 
-
+        //PluginManager
+        PluginManager pm = plugin.getServer().getPluginManager();
 
         //Items
         items = new ItemParser(plugin).parseItemsFromConfig();
 
         //Commands
         getCommand("powergrid").setExecutor(new mainCommandExecutor(plugin));
+        getCommand("powergrid").setTabCompleter(new mainCommandTabber(plugin));
 
-
+        //Listeners
+        pm.registerEvents(new BlockPlaceListener(plugin), this);
 
 
 
@@ -180,22 +187,20 @@ public final class MainPlugin extends JavaPlugin {
     }
 
     public Component colorizerLegacy(String text) {
-        return LegacyComponentSerializer.legacyAmpersand().deserialize(text);
+        return LegacyComponentSerializer.legacyAmpersand().deserialize(text).decoration(TextDecoration.ITALIC, false);
     }
 
     public Component colorizerLegacy(String text, Map<String, String> placeholders) {
         for (Map.Entry<String, String> entry : placeholders.entrySet()) {
             text = text.replace(entry.getKey(), entry.getValue());
         }
-        return LegacyComponentSerializer.legacyAmpersand().deserialize(text);
+
+        return LegacyComponentSerializer.legacyAmpersand().deserialize(text).decoration(TextDecoration.ITALIC, false);
     }
 
     public Component getMessage(String key, Map<String, String> placeholders) {
         String msg = getLang().getString(key, "Missing message: " + key);
-        for (Map.Entry<String, String> entry : placeholders.entrySet()) {
-            msg = msg.replace(entry.getKey(), entry.getValue());
-        }
-        return colorizerLegacy(msg);
+        return colorizerLegacy(msg, placeholders);
     }
 
     public Component getMessage(String key) {

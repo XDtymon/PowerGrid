@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 
 public class DatabaseConnection {
 
@@ -84,23 +85,19 @@ public class DatabaseConnection {
             switch (e.getErrorCode()) {
                 case 1045 -> placeholder.put("{status}", lang.getString("info.database.exitCodes.1045"));
                 case 1049 -> placeholder.put("{status}", lang.getString("info.database.exitCodes.1049"));
-                case 0 -> placeholder.put("{status}", lang.getString("info.database.exitCodes.0"));
+                case 0, -1 -> placeholder.put("{status}", lang.getString("info.database.status.false"));
                 default -> placeholder.put("{status}", lang.getString("info.database.fatal"));
             }
-
-            placeholder.put("{status}", lang.getString("info.database.status.false"));
 
             databaseInfo = plugin.stringReplacer(
                     lang.getString("info.database.motd"),
                     placeholder
             );
-
-
-
+            /*
             Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                e.printStackTrace();
+                            plugin.getLogger().log(Level.INFO, String.valueOf(e.getErrorCode()));
             }, 20L * 5);
-
+             */
 
         }
     }

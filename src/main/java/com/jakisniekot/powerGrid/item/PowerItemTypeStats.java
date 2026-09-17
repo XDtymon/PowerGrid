@@ -23,12 +23,12 @@ public class PowerItemTypeStats {
             ConfigurationSection itemSection
     ) {
         this.plugin = plugin;
+        this.itemSection = itemSection;
+        this.powerItemType = powerItemType;
     }
 
     public ItemMeta addStats(ItemMeta itemMeta) {
         PersistentDataContainer pdc = itemMeta.getPersistentDataContainer();
-
-        pdc.set(KeyUtil.UUIDKey(), PersistentDataType.STRING, UUID.randomUUID().toString());
 
         if (powerItemType == PowerItemType.WIRE) {
             //CONNECTION DISTANCE
@@ -57,7 +57,7 @@ public class PowerItemTypeStats {
             placeholder.put("%maxConnectionDistance%", String.valueOf(maxConnectionDistance));
             placeholder.put("%wattPerSecond%", String.valueOf(wattPerSecond));
 
-            if (itemSection.getStringList("lore").isEmpty()) {
+            if (!itemSection.getStringList("lore").isEmpty()) {
                 for (String line : itemSection.getStringList("lore")) {
                     lore.add(plugin.colorizerLegacy(line, placeholder));
                 }
@@ -109,7 +109,8 @@ public boolean hasList(PersistentDataContainer pdc) {
             placeholder.put("%maxConnectonAmount%", String.valueOf(maxConnectonAmount));
             placeholder.put("%allowedWireTypes%", String.valueOf(allowedWireTypes));
 
-            if (itemSection.getStringList("lore").isEmpty()) {
+            if (!itemSection.getStringList("lore").isEmpty()) {
+
                 for (String line : itemSection.getStringList("lore")) {
                     lore.add(plugin.colorizerLegacy(line, placeholder));
                 }
@@ -117,7 +118,7 @@ public boolean hasList(PersistentDataContainer pdc) {
                 itemMeta.lore(lore);
             }
 
-            itemMeta.lore(lore);
+
 
         }
 

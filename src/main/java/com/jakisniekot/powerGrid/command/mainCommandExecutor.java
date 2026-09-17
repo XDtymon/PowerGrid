@@ -31,6 +31,9 @@ public class mainCommandExecutor implements CommandExecutor {
             switch (args[0].toLowerCase()) {
                 case "give":
 
+                    if (!player.hasPermission("powergrid.command.give")) {
+                        return true;
+                    }
                     //pg give <item> (player) (amount)
 
                     String item = null;

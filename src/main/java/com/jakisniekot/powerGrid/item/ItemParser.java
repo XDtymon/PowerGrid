@@ -98,6 +98,7 @@ public class ItemParser {
 
         if (itemSection.getString("powerItemType") != null) {
             if (itemSection.getString("powerItemType") == "NONE") {
+
             } else {
                 try {
                     powerItemType = PowerItemType.valueOf(itemSection.getString("powerItemType"));
@@ -112,14 +113,18 @@ public class ItemParser {
                     }
 
                 } catch (IllegalArgumentException e) {
-                    plugin.printLogs("errors.items.noCustomModelDataWarning", placeholder);
+                    errors = true;
 
                 }
             }
         }
 
 
-        if (!errors) plugin.printLogs("info.parsing.successful", placeholder);
+        if (!errors) {
+            plugin.printLogs("info.parsing.successful", placeholder);
+        } else {
+            plugin.printLogs("info.parsing.warning", placeholder);
+        };
 
         itemStack.setItemMeta(itemMeta);
         return itemStack;
