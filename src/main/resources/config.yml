@@ -11,8 +11,8 @@ lang: "en"
 
 #Databases:
 # - MYSQL
-# - FILE
-databaseType: MYSQL
+# - SQLITE
+databaseType: "SQLITE"
 databaseConnection:
   host: "localhost"
   user: "kotek"

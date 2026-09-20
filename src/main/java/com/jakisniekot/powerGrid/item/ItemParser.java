@@ -3,6 +3,7 @@ package com.jakisniekot.powerGrid.item;
 import com.jakisniekot.powerGrid.KeyUtil;
 import com.jakisniekot.powerGrid.MainPlugin;
 import com.jakisniekot.powerGrid.util.ItemMaterial;
+import com.jakisniekot.powerGrid.util.TextUtility;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -82,7 +83,7 @@ public class ItemParser {
 
 
         if (itemSection.getString("itemName") != null) {
-            itemName = plugin.colorizerLegacy(itemSection.getString("itemName"));
+            itemName = TextUtility.color(itemSection.getString("itemName"));
             itemMeta.displayName(itemName);
         } else {
             errors = true;
@@ -104,7 +105,7 @@ public class ItemParser {
                     powerItemType = PowerItemType.valueOf(itemSection.getString("powerItemType"));
                     pdc.set(KeyUtil.TypeKey(), PersistentDataType.STRING, powerItemType.toString());
 
-                    PowerItemTypeStats powerItemTypeStats = new PowerItemTypeStats(plugin, powerItemType, itemSection);
+                    PowerItemTypeStats powerItemTypeStats = new PowerItemTypeStats(plugin, powerItemType, itemSection, configItemID);
 
                     if (powerItemTypeStats.addStats(itemMeta) != null) {
                         itemMeta = powerItemTypeStats.addStats(itemMeta);
@@ -133,7 +134,7 @@ public class ItemParser {
     private ItemStack errorItem() {
         ItemStack errorsItemStack = new ItemStack(Material.BARRIER);
         ItemMeta errorsItemMeta = errorsItemStack.getItemMeta();
-        errorsItemMeta.itemName(plugin.colorizerLegacy("&cERROR &8- &7Check console"));
+        errorsItemMeta.itemName(TextUtility.color("&cERROR &8- &7Check console"));
         errorsItemStack.setItemMeta(itemMeta);
         return errorsItemStack;
     }

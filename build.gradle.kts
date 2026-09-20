@@ -16,6 +16,7 @@ repositories {
 dependencies {
     compileOnly("io.papermc.paper:paper-api:26.2.build.+")
     implementation("com.mysql:mysql-connector-j:8.4.0")
+    implementation("org.xerial:sqlite-jdbc:3.46.1.3")
 }
 
 java {

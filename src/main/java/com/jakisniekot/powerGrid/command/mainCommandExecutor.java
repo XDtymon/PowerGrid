@@ -70,6 +70,10 @@ public class mainCommandExecutor implements CommandExecutor {
                     if (args.length == 4) giveItem(target, amount, item);
 
                     break;
+                case "reload":
+                    break;
+                case "save":
+                    break;
             }
 
 

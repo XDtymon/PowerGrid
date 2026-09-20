@@ -1,4 +1,5 @@
 info:
+  wireReload: "&7Reloaded &f{wiresReloaded} &ewires &7 which accumulated over &f{armorStandsRemoved} &eArmorStand"
   parsing:
     start: "&fItem parsing &astarted&7!"
     end: "&fItem parsing &cended&7!"
@@ -41,8 +42,29 @@ info:
 
     motd: "&#FF9B00Database: {status} &8| &7DatabaseName: &f{name} &8| &7User: &f{user} &8| &7Password: &f{password} &8| &7Port: &f{port}"
 
+debugLog:
+  connectorPlaced: "&7Added connector with &f{locString} &7to the database!"
+  connectorRemoved: "&7Removed connector with &f{locString} &7from the database!"
+  wire:
+    first: "&7Player &f{player} &7started a wire connection at &f{locString}&7!"
+    success: "&7Player &f{player} &7finished his wire connection!"
+    cancel: "&7Player &f{player} &7canceled his wire connection!"
+
+wire:
+  actionbar:
+    #{wireDisplayName}
+    main: "&7Wire Installation&8 - &e{distance}&fm&7/&e{max_distance}&fm &8&l| &cShift click to cancel"
+    success: "&aWire successfully installed"
+    cancel: "&cWire installation cancelled"
+    error:
+      cannotConnectToItself: "&cWire cannot connect to itself"
+      tooFar: "&cExceeded wire range limit"
+      connectorHasTooManyConnections: "&cThis wire connector has no more space left"
+      alreadyConnected: "&cThis connection is already established"
 
 errors:
+  database:
+    noConnection: "&7Database isnt connected properly, &caborting action"
 
   items:
 

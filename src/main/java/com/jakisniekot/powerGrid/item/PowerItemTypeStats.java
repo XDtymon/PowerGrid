@@ -2,11 +2,13 @@ package com.jakisniekot.powerGrid.item;
 
 import com.jakisniekot.powerGrid.KeyUtil;
 import com.jakisniekot.powerGrid.MainPlugin;
+import com.jakisniekot.powerGrid.util.TextUtility;
 import net.kyori.adventure.text.Component;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import org.w3c.dom.Text;
 
 import java.util.*;
 
@@ -16,19 +18,25 @@ public class PowerItemTypeStats {
 
     private PowerItemType powerItemType;
     private ConfigurationSection itemSection;
+    private String ITEM_ID;
 
     public PowerItemTypeStats(
             MainPlugin plugin,
             PowerItemType powerItemType,
-            ConfigurationSection itemSection
+            ConfigurationSection itemSection,
+            String ITEM_ID
     ) {
         this.plugin = plugin;
         this.itemSection = itemSection;
         this.powerItemType = powerItemType;
+        this.ITEM_ID = ITEM_ID;
     }
 
     public ItemMeta addStats(ItemMeta itemMeta) {
         PersistentDataContainer pdc = itemMeta.getPersistentDataContainer();
+
+        //ITEM_ID
+        pdc.set(KeyUtil.ItemIDKey(), PersistentDataType.STRING, ITEM_ID);
 
         if (powerItemType == PowerItemType.WIRE) {
             //CONNECTION DISTANCE
@@ -41,6 +49,11 @@ public class PowerItemTypeStats {
                 pdc.set(KeyUtil.MaxConnectionDistanceKey(), PersistentDataType.INTEGER, maxConnectionDistance);
             }
 
+            //WIRE BLOCKS
+            List<String> wireBlocks = itemSection.getStringList("wireBlocks");
+            //if (!wireBlocks.isEmpty()) wireBlocks.add("STONE");
+            pdc.set(KeyUtil.WireBlocksKey(), PersistentDataType.LIST.strings(), wireBlocks);
+
             //WATT PER SECOND
             int wattPerSecond = 0;
             wattPerSecond = itemSection.getInt("wattPerSecond");
@@ -51,6 +64,16 @@ public class PowerItemTypeStats {
                 pdc.set(KeyUtil.WattPerSecondKey(), PersistentDataType.INTEGER, wattPerSecond);
             }
 
+            //CABLE PARTICLES
+            String wireParticles;
+            if (itemSection.getString("wireParticles") != null) {
+                wireParticles = itemSection.getString("wireParticles");
+            } else {
+                wireParticles = "REDSTONE|#0000FF|1.2";
+            }
+
+            pdc.set(KeyUtil.WireParticleKey(), PersistentDataType.STRING, wireParticles);
+
             List<Component> lore = new ArrayList<>();
 
             Map<String, String> placeholder = new HashMap<>();
@@ -59,22 +82,16 @@ public class PowerItemTypeStats {
 
             if (!itemSection.getStringList("lore").isEmpty()) {
                 for (String line : itemSection.getStringList("lore")) {
-                    lore.add(plugin.colorizerLegacy(line, placeholder));
+                    lore.add(TextUtility.stringReplacer(line, placeholder));
                 }
 
                 itemMeta.lore(lore);
             }
 
-            itemMeta.lore(lore);
-
         } else if (powerItemType == PowerItemType.CONNECTOR) {
             //MAX CONNECTION AMOUNT
-            int maxConnectonAmount = 0;
-            maxConnectonAmount = itemSection.getInt("maxConnectionAmount");
-
-            if (maxConnectonAmount == 0) {
-                return null;
-            }
+            int maxConnectionAmount = itemSection.getInt("maxConnectionAmount", 1);
+            pdc.set(KeyUtil.MaxConnectionAmountKey(), PersistentDataType.INTEGER, maxConnectionAmount);
 
             //ALLOWED WIRE TYPES & LIST TYPE
             List<String> allowedWireTypes = itemSection.getStringList("allowedWireTypes");
@@ -103,23 +120,13 @@ public boolean hasList(PersistentDataContainer pdc) {
                 pdc.set(KeyUtil.AllowedTypesListTypeKey(), PersistentDataType.BOOLEAN, blacklist);
             }
 
-            List<Component> lore = new ArrayList<>();
-
             Map<String, String> placeholder = new HashMap<>();
-            placeholder.put("%maxConnectonAmount%", String.valueOf(maxConnectonAmount));
+            placeholder.put("%maxConnectionAmount%", String.valueOf(maxConnectionAmount));
             placeholder.put("%allowedWireTypes%", String.valueOf(allowedWireTypes));
 
             if (!itemSection.getStringList("lore").isEmpty()) {
-
-                for (String line : itemSection.getStringList("lore")) {
-                    lore.add(plugin.colorizerLegacy(line, placeholder));
-                }
-
-                itemMeta.lore(lore);
+                itemMeta.lore(TextUtility.listReplacer(itemSection.getStringList("lore"), placeholder));
             }
-
-
-
         }
 
         return itemMeta;
