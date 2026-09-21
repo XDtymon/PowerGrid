@@ -128,6 +128,7 @@ public class ItemParser {
         };
 
         itemStack.setItemMeta(itemMeta);
+        itemStack.setAmount(1);
         return itemStack;
     }
 

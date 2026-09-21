@@ -1,3 +1,6 @@
+#
+# WIRES
+#
 copper_wire:
   itemName: "&#D07232ᴍɪᴇᴅᴢ&#D37033ɪ&#D66E33ᴀ&#D96B34ɴ&#DC6934ʏ &#E26535ᴋ&#E56336ᴀ&#E86036ʙ&#EB5E37ᴇ&#EE5C37ʟ"
   lore:
@@ -9,12 +12,45 @@ copper_wire:
   wireParticles: "REDSTONE|#D07232|0.5"
   powerItemType: WIRE
   maxConnectionDistance: 16
-  wattPerSecond: 20
+  wattPerSecond: 80
   wireBlocks:
     - COPPER_BLOCK
     - COPPER_BULB
 
+aluminium_wire:
+  itemName: "&#78D0D4ᴀ&#7DD1D5ʟ&#81D2D5ᴜ&#86D3D6ᴍ&#8BD4D6ɪ&#8FD5D7ɴ&#94D6D8ɪ&#99D7D8ᴏ&#9DD7D9ᴡ&#A2D8D9ʏ &#ABDADBᴋ&#B0DBDBᴀ&#B5DCDCʙ&#B9DDDCᴇ&#BEDEDDʟ"
+  lore:
+    - "&8&l| &r&7Energia: &f%wattPerSecond%&eW"
+    - "&8&l| &r&7Maks. długość: &f%maxConnectionDistance%&em"
+  customModelData: 0
+  material: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvN2IyZjJiNzY0MmI1NDQ5MGI5ZmZhMWUwZTFiMjk2YWFkMmI3YTRlZGI5MzYxZTdlOGU5OTAzYjY0ZGJiODkzOSJ9fX0=
 
+  wireParticles: "REDSTONE|#78D0D4|0.5"
+  powerItemType: WIRE
+  maxConnectionDistance: 24
+  wattPerSecond: 20
+  wireBlocks:
+    - IRON_BLOCK
+    - DIORITE
+    - QUARTZ_BLOCK
+electrum_wire:
+  itemName: "&#D3D478ᴇ&#D4D581ʟ&#D6D68Aᴇ&#D7D792ᴋ&#D9D89Bᴛ&#DAD9A4ʀ&#DBDAADʏ&#DDDBB5ᴛ&#DEDCBEᴏ&#E1E0B0ᴡ&#E3E4A2ʏ &#E9EC87ᴋ&#EBF079ᴀ&#EEF46Bʙ&#F0F85Dᴇ&#F3FC4Fʟ"
+  lore:
+    - "&8&l| &r&7Energia: &f%wattPerSecond%&eW"
+    - "&8&l| &r&7Maks. długość: &f%maxConnectionDistance%&em"
+  customModelData: 0
+  material: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOGUwMDlkOGJhN2M0ZGI3Yzk3ZTcwOGYxMDUzNzBjOGIwNDM2M2ZiNTJjMjIwMzljNWU1ZTVmZGE5YzQzMjQ1ZSJ9fX0=
+
+  wireParticles: "REDSTONE|#D07232|0.5"
+  powerItemType: WIRE
+  maxConnectionDistance: 8
+  wattPerSecond: 400
+  wireBlocks:
+    - YELLOW_GLAZED_TERRACOTTA
+    - RAW_GOLD_BLOCK
+#
+# CONNECTORS
+#
 copper_connector:
   itemName: "&#D07232ᴍɪᴇᴅᴢɪ&#D37033ᴀ&#D66E33ɴ&#D96B34ᴇ &#DF6735ᴢ&#E26535ʟ&#E56336ᴀ&#E86036ᴄ&#EB5E37ᴢ&#EE5C37ᴇ"
   lore:
@@ -28,3 +64,75 @@ copper_connector:
   allowedWireTypes:
     - copper_wire
   blacklist: false
+aluminium_connector:
+  itemName: "&#78D0D4ᴀ&#7CD1D5ʟ&#81D2D5ᴜ&#85D3D6ᴍ&#8AD4D6ɪ&#8ED4D7ɴ&#92D5D7ɪ&#97D6D8ᴏ&#9BD7D9ᴡ&#9FD8D9ᴇ &#A8DADAᴢ&#ADDBDBʟ&#B1DBDBᴀ&#B5DCDCᴄ&#BADDDCᴢ&#BEDEDDᴇ"
+  lore:
+    #- "&8&l| &7=: &f%wattPerSecond%&eW"
+    - "&8&l| &r&7Maks. ilość połączeń: &f%maxConnectonAmount%"
+  customModelData: 0
+  material: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzI4NmE0NmIzODMzZmU4MDY5Nzg4OWZjNzBlNWY1NWM4NWYzODE1YjNlZmE4ZTY4MWQ0OTMwZjM3ZDNmN2U3In19fQ==
+  powerItemType: CONNECTOR
+  maxConnectionAmount: 8
+  allowedWireTypes:
+    - aluminium_wire
+  blacklist: false
+bronze_connector:
+  itemName: "&#AB8540ʙ&#AA873Bʀ&#A98A35ᴀ&#A88C30ᴢ&#A78E2Bᴏ&#A69026ᴡ&#A59320ᴇ &#B3A324ᴢ&#C1B12Cʟ&#D0BF35ᴀ&#DFCD3Eᴄ&#EDDB46ᴢ&#FCE94Fᴇ"
+  lore:
+    #- "&8&l| &7=: &f%wattPerSecond%&eW"
+    - "&8&l| &r&7Maks. ilość połączeń: &f%maxConnectonAmount%"
+  customModelData: 0
+  material: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTc2YmM2ODU0N2M3NmJhNDYyNTA4NTAyOTgwNDY0N2I4MmY4MTY3MDVjOGJiNjFlMzdkMTQ4NWE3NWM3MmM1ZiJ9fX0=
+  powerItemType: CONNECTOR
+  maxConnectionAmount: 3
+  allowedWireTypes:
+    - electrum_wire
+  blacklist: false
+#
+# CUSTOM_ITEMS
+#
+
+#INGOTS
+aluminium_ingot:
+  itemName: "&eSztabka Aluminium"
+  material: IRON_INGOT
+  lore: []
+  customModelData: 0
+  powerItemType: NONE
+tin_ingot:
+  itemName: "&fSztabka Cyny"
+  material: IRON_INGOT
+  lore: []
+  customModelData: 0
+  powerItemType: NONE
+electrum_ingot:
+  itemName: "&#D3D478ѕ&#D4D581ᴢ&#D6D68Aᴛ&#D7D792ᴀ&#D9D89Bʙ&#DAD9A4ᴋ&#DBDAADᴀ &#DEDCBEᴇ&#E1E0B0ʟ&#E3E4A2ᴇ&#E6E894ᴋ&#E9EC87ᴛ&#EBF079ʀ&#EEF46Bʏ&#F0F85Dᴛ&#F3FC4Fᴜ"
+  material: GOLD_INGOT
+  lore: []
+  customModelData: 0
+  powerItemType: NONE
+bronze_ingot:
+  itemName: "&#AB8540S&#AA883Az&#A98A34t&#A88D2Ea&#A69027b&#A59221k&#A4951Ba &#C1B12Cb&#D0BF35r&#DFCD3Eą&#EDDB46z&#FCE94Fu"
+  material: COPPER_INGOT
+  lore: []
+  customModelData: 0
+  powerItemType: NONE
+#NUGGETS
+tin_nugget:
+  itemName: "&fSamorodek Cyny"
+  material: IRON_NUGGET
+  lore: []
+  customModelData: 0
+  powerItemType: NONE
+aluminium_nugget:
+  itemName: "&fSamorodek Aluminium"
+  material: IRON_NUGGET
+  lore: []
+  customModelData: 0
+  powerItemType: NONE
+electrum_nugget:
+  itemName: "&#D3D478ѕ&#D4D580ᴀ&#D5D688ᴍ&#D7D78Fᴏ&#D8D897ʀ&#D9D89Fᴏ&#DAD9A7ᴅ&#DCDAAEᴇ&#DDDBB6ᴋ &#E0E0B2ᴇ&#E3E3A5ʟ&#E5E799ᴇ&#E7EA8Dᴋ&#EAEE80ᴛ&#ECF174ʀ&#EEF568ʏ&#F1F85Bᴛ&#F3FC4Fᴜ"
+  material: GOLD_NUGGET
+  lore: []
+  customModelData: 0
+  powerItemType: NONE

@@ -9,6 +9,7 @@ import org.bukkit.Location;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -38,14 +39,7 @@ public class BlockBreakListener implements Listener {
             event.setDropItems(false);
 
             Location location = event.getBlock().getLocation();
-            location
-                    .getWorld()
-                    .dropItem(
-                        location,
-                            plugin.getItemFromID(
-                                    connector.itemID()
-                            )
-                    );
+            plugin.dropItems(new ItemStack[]{plugin.getItemFromID(connector.itemID())}, location);
 
             connectorDAO.deleteConnectorWithWire(locString);
         }

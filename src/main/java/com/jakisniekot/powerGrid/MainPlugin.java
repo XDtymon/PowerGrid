@@ -243,6 +243,15 @@ public final class MainPlugin extends JavaPlugin {
         printLogs("info.wireReload", placeholder);
     }
 
+    public void dropItems(ItemStack[] itemStacks, Location location) {
+        for (ItemStack itemStack : itemStacks) {
+            location.getWorld().dropItem(location, itemStack);
+        }
+    }
+
+
+
+
     public MachineFileHandler getMachineFileHandler() {
         return machineFileHandler;
     }
@@ -284,7 +293,7 @@ public final class MainPlugin extends JavaPlugin {
     }
 
     public ItemStack getItemFromID(String id) {
-        return items.get(id);
+        return items.get(id).clone();
     }
 
     public boolean isExistingItem(String id) {
