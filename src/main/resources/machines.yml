@@ -9,13 +9,41 @@ machines:
       itemName: "&#EEA400E&#EE9E00l&#EF9800e&#EF9201k&#F08B01t&#F08501r&#F17F01y&#F17901c&#F27302z&#F26D02n&#F36702y &#F45A02P&#F45403i&#F54E03e&#F54803c"
       lore: []
       customModelData: 0
+    energyStorage:
+      maximumEnergy: 100000
+      maxInputTransfer: 1000
+      maxOutputTransfer: 1000
+      #Most energy <-
+      slots: [16, 25, 34]
+
+    itemStorage:
+#     SLOT_IDS
+      itemInput1:
+        slotID: 10
+        maxAmount: 64
+        itemSlotType: INPUT
+      itemInput2:
+        slotID: 11
+        maxAmount: 64
+        itemSlotType: INPUT
+      itemInput3:
+        slotID: 12
+        maxAmount: 64
+        itemSlotType: INPUT
     multiblock:
       keys:
         C: COPPER_BLOCK
-      structures:
+        M: MAGMA_BLOCK
+      structure:
         1:
           - "CCC"
           - "CCC"
           - "CCC"
         2:
-          - ""
+          - "CCC"
+          - "CMC"
+          - "C@C"
+        3:
+          - "CCC"
+          - "CCC"
+          - "CCC"

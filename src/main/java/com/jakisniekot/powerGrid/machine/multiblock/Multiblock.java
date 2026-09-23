@@ -13,19 +13,28 @@ import java.util.Map;
 
 public class Multiblock {
 
-    private MainPlugin plugin;
-
-    private Map<Character, Material> keys;
-    private List<List<List<Material>>> structure;
+    private Map<Character, Material> keys = new HashMap<>();
+    private List<List<List<Material>>> structure = new ArrayList<>();
 
     public Multiblock (
-            MainPlugin plugin,
-            String id
+            ConfigurationSection section
     ) {
-        MachineFileHandler machineFileHandler = plugin.getMachineFileHandler();
-        FileConfiguration machines = machineFileHandler.getMachineTypesConfig();
 
-        ConfigurationSection keys = machines.getConfigurationSection("machines." + id + ".multiblock.keys");
+        ConfigurationSection keys = section.getConfigurationSection("multiblock.keys");
+
+        Material controllerMaterial;
+        boolean controllerUsed = false;
+
+        try {
+            controllerMaterial = Material.valueOf(section.getString("item.mateial"));
+        } catch (IllegalArgumentException e) {
+            controllerMaterial = Material.STONE;
+        }
+
+        if (!controllerMaterial.isBlock()) {
+            controllerMaterial = Material.STONE;
+        }
+
         for (String key : keys.getKeys(false)) {
             Material material;
 
@@ -40,7 +49,7 @@ public class Multiblock {
             this.keys.put(c, material);
         }
 
-        ConfigurationSection structure = machines.getConfigurationSection("machines." + id + ".multiblock.structure");
+        ConfigurationSection structure = section.getConfigurationSection("multiblock.structure");
 
         List<List<List<Material>>> structureList = new ArrayList<>();
 
@@ -57,14 +66,19 @@ public class Multiblock {
                     if (c == ' ') {
                         newLine.add(Material.AIR);
                         continue;
-                    } else {
-                        try {
-                            Material material = this.keys.get(c);
-                            newLine.add(material);
-                            continue;
-                        } catch (NullPointerException _) {
-                            newLine.add(Material.AIR);
+                    } else if (c == '@') {
+                        if (controllerUsed) {
+                            newLine.add(Material.STONE);
+                        } else {
+                            newLine.add(controllerMaterial);
+                            controllerUsed = true;
                         }
+                    } else {
+                        Material material = this.keys.get(c);
+                        if (material == null) {
+                            material = Material.AIR;
+                        }
+                        newLine.add(material);
                     }
                 }
 

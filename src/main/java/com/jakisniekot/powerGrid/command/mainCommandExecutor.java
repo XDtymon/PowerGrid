@@ -74,6 +74,14 @@ public class mainCommandExecutor implements CommandExecutor {
                     break;
                 case "save":
                     break;
+
+                    /*
+                case "machinetype":
+                    if (args.length == 4) {
+
+                    }
+
+                     */
             }
 
 

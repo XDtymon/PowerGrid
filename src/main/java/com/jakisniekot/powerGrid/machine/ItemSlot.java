@@ -4,6 +4,8 @@ import org.bukkit.inventory.ItemStack;
 
 public record ItemSlot(
         ItemStack itemStack,
-        int maxAmount
+        int maxAmount,
+        int slotID,
+        ItemSlotType itemSlotType
 ) {
 }
