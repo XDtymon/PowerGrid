@@ -147,7 +147,59 @@ public final class MainPlugin extends JavaPlugin {
         // Plugin shutdown logic
 
         //Files
-        saveConfig();
+        saveDefaultConfig();
+        langFileHandler.setupLangFiles();
+        itemFileHandler.setupItemFiles();
+        machineFileHandler.setupMachineFiles();
+
+        //Database
+        database.connect();
+        database.createTables();
+
+        String DB_TYPE = getConfig().getString("databaseType");
+
+        this.connectorDAO = new ConnectorDAO(database.getConnection(), DB_TYPE, plugin);
+        this.wireDAO = new WireDAO(database.getConnection(), DB_TYPE, plugin);
+        //this.relayDAO = new RelayDAO(database.getConnection(), DB_TYPE);
+
+        //PlayerUtility
+        this.playerUtility = new PlayerUtility(plugin);
+
+        //MOTD
+        Map<String, String> placeholder = new HashMap<>();
+        placeholder.put("{version}", plugin.getPluginMeta().getVersion());
+        placeholder.put("{fileHandlerStatus}", database.getStatus());
+        printLogs("info.startup", placeholder);
+
+        //PluginManager
+        PluginManager pm = plugin.getServer().getPluginManager();
+
+        //Items
+        items = new ItemParser(plugin).parseItemsFromConfig();
+
+        //Commands
+        getCommand("powergrid").setExecutor(new mainCommandExecutor(plugin));
+        getCommand("powergrid").setTabCompleter(new mainCommandTabber(plugin));
+
+        //Listeners
+        pm.registerEvents(new PlayerInteractListener(plugin), this);
+        pm.registerEvents(new BlockPlaceListener(plugin), this);
+        pm.registerEvents(new BlockBreakListener(plugin), this);
+        pm.registerEvents(new SlotSwitchListener(plugin), this);
+        pm.registerEvents(new InventoryClickListener(plugin), this);
+        pm.registerEvents(new PlayerDeathListener(plugin), this);
+        pm.registerEvents(new PlayerQuitListener(plugin), this);
+        pm.registerEvents(new PlayerTeleportationListener(plugin), this);
+
+        //Handlers
+        this.wireItemActions = new WireItemActions(plugin);
+
+
+        //Tests
+        new WireConnectionRunnable(plugin).runTaskTimer(this, 0L, 1L);
+
+        //Wires
+        reloadWires();
 
     }
 
@@ -213,7 +265,6 @@ public final class MainPlugin extends JavaPlugin {
 
             World world = loc1.getWorld();
 
-            // Force-load both ends so their armor stands actually exist to be found
             world.getChunkAt(loc1).load();
             world.getChunkAt(loc2).load();
 

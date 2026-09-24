@@ -26,7 +26,7 @@ public class Multiblock {
         boolean controllerUsed = false;
 
         try {
-            controllerMaterial = Material.valueOf(section.getString("item.mateial"));
+            controllerMaterial = Material.valueOf(section.getString("item.material"));
         } catch (IllegalArgumentException e) {
             controllerMaterial = Material.STONE;
         }
@@ -89,5 +89,9 @@ public class Multiblock {
         }
 
         this.structure = structureList;
+    }
+
+    public List<List<List<Material>>> getStructure() {
+        return structure;
     }
 }

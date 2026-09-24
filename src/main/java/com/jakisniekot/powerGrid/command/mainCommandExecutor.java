@@ -1,15 +1,25 @@
 package com.jakisniekot.powerGrid.command;
 
 import com.jakisniekot.powerGrid.MainPlugin;
+import com.jakisniekot.powerGrid.machine.multiblock.Multiblock;
 import com.sun.jdi.IntegerType;
 import net.kyori.adventure.text.event.ClickEvent;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.util.RayTraceResult;
+import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class mainCommandExecutor implements CommandExecutor {
 
@@ -74,14 +84,100 @@ public class mainCommandExecutor implements CommandExecutor {
                     break;
                 case "save":
                     break;
+                case "structure":
+                    if (args.length < 1) {
+                        player.sendMessage("Usage: /" + label + " <machineId>");
+                        return true;
+                    }
 
-                    /*
-                case "machinetype":
-                    if (args.length == 4) {
+                    String machineId = args[1];
+
+                    // Adjust range as needed. getTargetBlockExact ignores non-solid blocks;
+                    // swap for getTargetBlock(null, range) if you need to hit e.g. glass/air-adjacent faces differently.
+                    Block targetBlock = player.getTargetBlockExact(10);
+                    if (targetBlock == null) {
+                        player.sendMessage("You must be looking directly at a block within range.");
+                        return true;
+                    }
+
+                    int MAX_AIM_DISTANCE = 5;
+
+                    Location eye = player.getEyeLocation();
+                    Vector direction = eye.getDirection();
+
+                    RayTraceResult result = player.getWorld().rayTraceBlocks(eye, direction, MAX_AIM_DISTANCE);
+
+                    int[] controllerPos = {
+                            result.getHitBlock().getLocation().getBlockX(),
+                            result.getHitBlock().getLocation().getBlockY(),
+                            result.getHitBlock().getLocation().getBlockZ()
+                    };
+
+
+                    if (result != null && result.getHitBlock() != null) {
+                        controllerPos[0] = result.getHitBlock().getLocation().getBlockX();
+                        controllerPos[1] = result.getHitBlock().getLocation().getBlockY();
+                        controllerPos[2] = result.getHitBlock().getLocation().getBlockZ();
+                    } else {
+                        return true;
 
                     }
 
-                     */
+
+                    // TODO: replace with your actual lookup, e.g. plugin.getMachineFileHandler().getMachine(machineId).getMultiblock()
+                    Multiblock multiblock = new Multiblock(plugin.getMachineFileHandler().getMachineTypesConfig().getConfigurationSection("machines."+machineId));
+                    if (multiblock == null) {
+                        player.sendMessage("No machine found with id '" + machineId + "'.");
+                        return true;
+                    }
+
+                    List<List<List<Material>>> structure = multiblock.getStructure();
+
+                    if (controllerPos == null) {
+                        player.sendMessage("This machine's structure has no controller ('@') defined.");
+                        return true;
+                    }
+
+                    World world = targetBlock.getWorld();
+                    Location controllerLoc = targetBlock.getLocation();
+
+                    int placed = 0;
+
+                    for (int layer = 0; layer < structure.size(); layer++) {
+                        List<List<Material>> layerData = structure.get(layer);
+
+                        for (int row = 0; row < layerData.size(); row++) {
+                            List<Material> line = layerData.get(row);
+
+                            for (int col = 0; col < line.size(); col++) {
+                                Material material = line.get(col);
+
+                                // Skip cells with no material assigned (e.g. malformed keys) to avoid NPEs.
+                                if (material == null) {
+                                    continue;
+                                }
+
+                                // "space" cells were parsed as Material.AIR meaning "don't care" -
+                                // skip them so we don't clear out the player's existing surroundings.
+                                // Remove this check if you DO want blank cells to force-clear to air.
+                                if (material == Material.AIR) {
+                                    continue;
+                                }
+
+                                int dy = layer - controllerPos[0];
+                                int dz = row - controllerPos[1];
+                                int dx = col - controllerPos[2];
+
+                                Location blockLoc = controllerLoc.clone().add(dx, dy, dz);
+                                world.getBlockAt(blockLoc).setType(material);
+                                placed++;
+                                player.sendMessage(material.toString());
+                            }
+                        }
+                    }
+
+                    player.sendMessage("Pasted multiblock '" + machineId + "' (" + placed + " blocks placed).");
+                    return true;
             }
 
 
