@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class mainCommandTabber implements TabCompleter {
 
@@ -30,6 +31,8 @@ public class mainCommandTabber implements TabCompleter {
 
         List<String> items = plugin.getItemsList();
 
+        Set<String> machines = plugin.getMachineFileHandler().getMachineTypesConfig().getConfigurationSection("machines").getKeys(false);
+
         List<String> players = new ArrayList<>();
         for (Player player : Bukkit.getOnlinePlayers()) {
             players.add(player.getDisplayName());
@@ -42,6 +45,7 @@ public class mainCommandTabber implements TabCompleter {
                     completions.add("give");
                     completions.add("reload");
                     completions.add("save");
+                    completions.add("machine");
                 } else {
                     switch (args[0].toLowerCase()) {
                         case "give":
@@ -59,6 +63,13 @@ public class mainCommandTabber implements TabCompleter {
                                 completions.add("64");
                             }
 
+                            break;
+                        case "machine":
+                            if (args.length == 2) {
+                                completions.add("structure");
+                            } else if (args.length == 3) {
+                                completions.addAll(machines);
+                            }
                             break;
                     }
                 }

@@ -1,6 +1,8 @@
 emptySlotItem:
   material: LIGHT_GRAY_STAINED_GLASS_PANE
   itemName: "&7"
+energyItemSlot:
+  
 
 machines:
   electric_furnace:

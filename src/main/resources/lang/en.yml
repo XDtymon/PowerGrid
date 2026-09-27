@@ -1,11 +1,17 @@
 info:
   wireReload: "&7Reloaded &f{wiresReloaded} &ewires &7 which accumulated over &f{armorStandsRemoved} &eArmorStand"
-  parsing:
+  itemParsing:
     start: "&fItem parsing &astarted&7!"
     end: "&fItem parsing &cended&7!"
 
     successful: "&7Item &f{ID} &aregistered successfully!"
     warning: "&7Item &f{ID} &eregistered with warnings!"
+  soundParsing:
+    start: "&fSound parsing &astarted&7!"
+    end: "&fSound parsing &cended&7!"
+
+    successful: "&7Sound &f{ID} &aregistered successfully!"
+    warning: "&7Sound &f{ID} &eregistered with warnings!"
   startup:
     - ""
     - "&8==============================================================================="
@@ -70,8 +76,14 @@ errors:
 
 
     noSuchItem: "&cItem {ID} isnt registered properly / doesnt exist!"
-
     noMaterial: "&cItem {ID} does not have its material set! Forcing material to STONE"
     nonExistentMaterial: "&cItem {ID} has a non-existent material set! Forcing material to STONE"
     noPowerItemType: "&cItem {ID} doesnt have its PowerItemType set! Add powerItemType: NONE if this shouldve happened"
+
+
+utilItems:
+  multimeter:
+    notAnEnergyBlock: "&cThis block does not contain energy"
+    success: "&7Energy: &e{energy}&fW&8/&e{maxEnergy}&fW &8| &aInput: &e{input}&fW &8| &cOutput: &e{output}&fW"
+
 

@@ -69,6 +69,19 @@ public class ConnectorDAO {
         }
     }
 
+    public boolean updateType(String id, ConnectorTypes newType) {
+        String query = "UPDATE connectors SET connectorType = ? WHERE id = ?";
+
+        try (PreparedStatement ps = SQL.prepareStatement(query)) {
+            ps.setString(1, newType.name());
+            ps.setString(2, id);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     public Connector get(String id) {
         String query = "SELECT * FROM connectors WHERE id = ?";
 

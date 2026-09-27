@@ -31,14 +31,14 @@ public class ItemParser {
     }
 
     public Map<String, ItemStack> parseItemsFromConfig() {
-        plugin.printLogs("info.parsing.start");
+        plugin.printLogs("info.itemParsing.start");
 
         Map<String, ItemStack> itemStack = new HashMap<>();
         for (String ID : itemFileHandler.getItemConfig().getKeys(false)) {
             itemStack.put(ID, parseItem(ID));
         }
 
-        plugin.printLogs("info.parsing.end");
+        plugin.printLogs("info.itemParsin.end");
 
         return itemStack;
     }
@@ -122,9 +122,9 @@ public class ItemParser {
 
 
         if (!errors) {
-            plugin.printLogs("info.parsing.successful", placeholder);
+            plugin.printLogs("info.itemParsin.successful", placeholder);
         } else {
-            plugin.printLogs("info.parsing.warning", placeholder);
+            plugin.printLogs("info.itemParsin.warning", placeholder);
         };
 
         itemStack.setItemMeta(itemMeta);

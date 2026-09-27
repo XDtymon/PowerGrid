@@ -21,10 +21,10 @@ public class MachineFileHandler {
     }
 
     public void setupMachineFiles() {
-        langFile = new File(plugin.getDataFolder() + "machines.yml");
+        langFile = new File(plugin.getDataFolder(), "machines.yml");
 
         if (!langFile.exists()) {
-            langFile.getParentFile().mkdirs();
+            plugin.getDataFolder().mkdirs();
             plugin.saveResource("machines.yml", false);
         }
 

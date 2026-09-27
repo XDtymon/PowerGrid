@@ -11,12 +11,14 @@ plugins {
 repositories {
     mavenCentral()
     maven("https://repo.papermc.io/repository/maven-public/")
+    maven("https://repo.xenondevs.xyz/releases")
 }
 
 dependencies {
     compileOnly("io.papermc.paper:paper-api:26.2.build.+")
     implementation("com.mysql:mysql-connector-j:8.4.0")
     implementation("org.xerial:sqlite-jdbc:3.46.1.3")
+    implementation("xyz.xenondevs.invui:invui:2.3.0")
 }
 
 java {

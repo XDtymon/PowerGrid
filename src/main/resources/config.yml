@@ -20,3 +20,6 @@ databaseConnection:
   name: "db"
   port: "3306"
   #forceURL: "jdbc:mysql://localhost:3306/db?useSSL=false&allowPublicKeyRetrieval=true"
+
+energy:
+  transfer-interval-ticks: 1   # 1 = tick, 20 = once a second

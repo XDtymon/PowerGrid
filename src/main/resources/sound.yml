@@ -1,0 +1,37 @@
+cableConnection:
+# SoundPlayType: Available types
+# PLAYER - only the player hears the sound (menus)
+# WORLD - everyone hears the sound
+  playType: PLAYER
+# type /playsound and find your desired sound
+  type: minecraft:item.lead.tied
+# Available categories
+#  MASTER
+#  MUSIC
+#  RECORDS
+#  WEATHER
+#  BLOCKS
+#  HOSTILE
+#  NEUTRAL
+#  PLAYERS
+#  AMBIENT
+#  VOICE
+  category: BLOCKS
+# Volume
+  volume: 1.0
+# Pitch
+  pitch: 1.0
+
+cableBreakConnection:
+  playType: PLAYER
+  type: minecraft:item.lead.break
+  category: BLOCKS
+  volume: 1.0
+  pitch: 1.0
+
+multimeterCheck:
+  playType: PLAYER
+  type: minecraft:block.chain.fall
+  category: MASTER
+  volume: 1.0
+  pitch: 1.0

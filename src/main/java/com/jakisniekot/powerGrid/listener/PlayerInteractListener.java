@@ -2,7 +2,9 @@ package com.jakisniekot.powerGrid.listener;
 
 import com.jakisniekot.powerGrid.KeyUtil;
 import com.jakisniekot.powerGrid.MainPlugin;
+import com.jakisniekot.powerGrid.actions.connector.ConnectorTypes;
 import com.jakisniekot.powerGrid.database.Connector;
+import com.jakisniekot.powerGrid.network.EnergyBlockUtil;
 import com.jakisniekot.powerGrid.particles.WireConnectionRunnable;
 import com.jakisniekot.powerGrid.util.LocationIDString;
 import org.bukkit.Location;
@@ -104,7 +106,23 @@ public class PlayerInteractListener implements Listener {
 
                 break;
 
+            case "WIRE_WRENCH":
+                if (event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
+                String id = LocationIDString.getString(event.getClickedBlock().getLocation());
+                Connector connector = plugin.getConnectorDAO().get(id);
 
+                if (connector != null) {
+                    ConnectorTypes newType = connector.connectorTypes().next(); // STATIC -> PUSH -> PULL -> STATIC
+                    plugin.getConnectorDAO().updateType(id, newType);
+                    event.getPlayer().sendMessage("Connector: " + newType.name());
+                }
+                break;
+            case "MULTIMETER":
+                if (event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
+                String locationString = LocationIDString.getString(event.getClickedBlock().getLocation());
+                EnergyBlockUtil energyBlockUtil = new EnergyBlockUtil();
+
+                break;
 
             case null:
                 break;

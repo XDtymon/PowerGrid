@@ -13,7 +13,10 @@ import com.jakisniekot.powerGrid.item.ItemParser;
 import com.jakisniekot.powerGrid.lang.LangFileHandler;
 import com.jakisniekot.powerGrid.listener.*;
 import com.jakisniekot.powerGrid.machine.MachineFileHandler;
+import com.jakisniekot.powerGrid.network.PowerNetworkManager;
+import com.jakisniekot.powerGrid.network.PowerTransferTask;
 import com.jakisniekot.powerGrid.particles.WireConnectionRunnable;
+import com.jakisniekot.powerGrid.sound.SoundFileHandler;
 import com.jakisniekot.powerGrid.util.ConsoleColors;
 import com.jakisniekot.powerGrid.util.LocationIDString;
 import com.jakisniekot.powerGrid.util.PlayerUtility;
@@ -28,6 +31,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitTask;
 
 import java.sql.Connection;
 import java.util.ArrayList;
@@ -46,6 +50,7 @@ public final class MainPlugin extends JavaPlugin {
     private LangFileHandler langFileHandler;
     private ItemFileHandler itemFileHandler;
     private MachineFileHandler machineFileHandler;
+    private SoundFileHandler soundFileHandler;
 
     private WireItemActions wireItemActions;
 
@@ -55,6 +60,9 @@ public final class MainPlugin extends JavaPlugin {
     private ConnectorDAO connectorDAO;
     //private RelayDAO relayDAO;
     private WireDAO wireDAO;
+
+    private PowerNetworkManager powerNetworkManager;
+    private BukkitTask powerTransferTask;
 
     private PlayerUtility playerUtility;
 
@@ -72,6 +80,8 @@ public final class MainPlugin extends JavaPlugin {
         this.langFileHandler = new LangFileHandler(plugin);
         this.itemFileHandler = new ItemFileHandler(plugin);
         this.machineFileHandler = new MachineFileHandler(plugin);
+        this.soundFileHandler = new SoundFileHandler(plugin);
+
         this.database = new DatabaseConnection(plugin);
 
         //Files
@@ -79,6 +89,8 @@ public final class MainPlugin extends JavaPlugin {
         langFileHandler.setupLangFiles();
         itemFileHandler.setupItemFiles();
         machineFileHandler.setupMachineFiles();
+        soundFileHandler.setupMachineFiles();
+
 
         //Database
         database.connect();
@@ -105,6 +117,9 @@ public final class MainPlugin extends JavaPlugin {
         //Items
         items = new ItemParser(plugin).parseItemsFromConfig();
 
+        //Sounds
+        soundFileHandler.parseSounds();
+
         //Commands
         getCommand("powergrid").setExecutor(new mainCommandExecutor(plugin));
         getCommand("powergrid").setTabCompleter(new mainCommandTabber(plugin));
@@ -128,6 +143,12 @@ public final class MainPlugin extends JavaPlugin {
 
         //Wires
         reloadWires();
+
+        //Power network
+        this.powerNetworkManager = new PowerNetworkManager(plugin, connectorDAO, wireDAO);
+        // czekamy aż chunki z reloadWires się załadują / wpiszą do bazy, zanim policzymy sieci
+        Bukkit.getScheduler().runTaskLater(plugin, powerNetworkManager::rebuildFromDatabase, 20L * 5 + 1L);
+        this.powerTransferTask = PowerTransferTask.start(plugin, powerNetworkManager);
         /*
         for (World world : Bukkit.getWorlds()) {
             for (Entity entity : world.getEntitiesByClass(ArmorStand.class)) {
@@ -146,6 +167,15 @@ public final class MainPlugin extends JavaPlugin {
     public void onDisable() {
         // Plugin shutdown logic
 
+
+    }
+
+    public void reload() {
+
+        if (powerTransferTask != null) {
+            powerTransferTask.cancel();
+        }
+
         //Files
         saveDefaultConfig();
         langFileHandler.setupLangFiles();
@@ -200,7 +230,6 @@ public final class MainPlugin extends JavaPlugin {
 
         //Wires
         reloadWires();
-
     }
 
     public void printLogs(String messageID) {
@@ -301,7 +330,9 @@ public final class MainPlugin extends JavaPlugin {
     }
 
 
-
+    public SoundFileHandler getSoundFileHandler() {
+        return soundFileHandler;
+    }
 
     public MachineFileHandler getMachineFileHandler() {
         return machineFileHandler;
@@ -314,13 +345,17 @@ public final class MainPlugin extends JavaPlugin {
     public ConnectorDAO getConnectorDAO() {
         return connectorDAO;
     }
-/*
-    public RelayDAO getRelayDAO() {
-        return relayDAO;
-    }
- */
+    /*
+        public RelayDAO getRelayDAO() {
+            return relayDAO;
+        }
+     */
     public WireDAO getWireDAO() {
         return wireDAO;
+    }
+
+    public PowerNetworkManager getPowerNetworkManager() {
+        return powerNetworkManager;
     }
 
     public WireItemActions getWireActions() {

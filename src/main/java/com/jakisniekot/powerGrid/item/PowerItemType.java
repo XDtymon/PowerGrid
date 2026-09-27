@@ -6,7 +6,8 @@ import org.bukkit.NamespacedKey;
 
 public enum PowerItemType {
 
-
+    WIRE_WRENCH(),
+    MULTIMETER(),
     CONNECTOR(),
     WIRE(),
     RELAY();

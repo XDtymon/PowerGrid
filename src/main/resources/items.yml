@@ -1,4 +1,27 @@
 #
+# UTIL
+#
+wire_wrench:
+  itemName: "&6ᴋʟᴜᴄᴢ ᴅᴏ ᴢᴌᴀᴄᴢʏ"
+  lore:
+    - "&8&l| &7Używane do zamiany trybu connectorów"
+  customModelData: 0
+  material: STICK
+
+  powerItemType: WIRE_WRENCH
+multimeter:
+  itemName: "&6ᴍᴜʟᴛɪᴍᴇᴛʀ"
+  lore:
+    - "&8&l| &7Sprawdza przepływ, ilość oraz maks. jej wartość"
+  customModelData: 0
+  material: STICK
+
+  powerItemType: MULTIMETER
+
+
+
+
+#
 # WIRES
 #
 copper_wire:
