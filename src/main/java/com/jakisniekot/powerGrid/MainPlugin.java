@@ -16,7 +16,8 @@ import com.jakisniekot.powerGrid.machine.MachineFileHandler;
 import com.jakisniekot.powerGrid.network.PowerNetworkManager;
 import com.jakisniekot.powerGrid.network.PowerTransferTask;
 import com.jakisniekot.powerGrid.particles.WireConnectionRunnable;
-import com.jakisniekot.powerGrid.sound.SoundFileHandler;
+import com.jakisniekot.powerGrid.recipe.RecipeHandler;
+import com.jakisniekot.powerGrid.sound.SoundHandler;
 import com.jakisniekot.powerGrid.util.ConsoleColors;
 import com.jakisniekot.powerGrid.util.LocationIDString;
 import com.jakisniekot.powerGrid.util.PlayerUtility;
@@ -50,7 +51,8 @@ public final class MainPlugin extends JavaPlugin {
     private LangFileHandler langFileHandler;
     private ItemFileHandler itemFileHandler;
     private MachineFileHandler machineFileHandler;
-    private SoundFileHandler soundFileHandler;
+    private SoundHandler soundHandler;
+    private RecipeHandler recipeHandler;
 
     private WireItemActions wireItemActions;
 
@@ -76,25 +78,36 @@ public final class MainPlugin extends JavaPlugin {
         // Plugin startup logic
         plugin = this;
 
-        //Instances
+        //INSTANCES
         this.langFileHandler = new LangFileHandler(plugin);
         this.itemFileHandler = new ItemFileHandler(plugin);
         this.machineFileHandler = new MachineFileHandler(plugin);
-        this.soundFileHandler = new SoundFileHandler(plugin);
+        this.soundHandler = new SoundHandler(plugin);
+        this.recipeHandler = new RecipeHandler(plugin);
 
         this.database = new DatabaseConnection(plugin);
 
-        //Files
+        //CONFIG
         saveDefaultConfig();
-        langFileHandler.setupLangFiles();
-        itemFileHandler.setupItemFiles();
-        machineFileHandler.setupMachineFiles();
-        soundFileHandler.setupMachineFiles();
 
+        //LANG
+        langFileHandler.setupLangFiles();
+
+        //MOTD
+        Map<String, String> placeholder = new HashMap<>();
+        placeholder.put("{version}", plugin.getPluginMeta().getVersion());
+        placeholder.put("{fileHandlerStatus}", database.getStatus());
+        printLogs("info.startup", placeholder);
 
         //Database
         database.connect();
         database.createTables();
+
+        //Other Files
+        itemFileHandler.setupItemFiles();
+        machineFileHandler.setupMachineFiles();
+        soundHandler.setupSoundFile();
+        recipeHandler.setupRecipeFiles();
 
         String DB_TYPE = getConfig().getString("databaseType");
 
@@ -105,11 +118,7 @@ public final class MainPlugin extends JavaPlugin {
         //PlayerUtility
         this.playerUtility = new PlayerUtility(plugin);
 
-        //MOTD
-        Map<String, String> placeholder = new HashMap<>();
-        placeholder.put("{version}", plugin.getPluginMeta().getVersion());
-        placeholder.put("{fileHandlerStatus}", database.getStatus());
-        printLogs("info.startup", placeholder);
+
 
         //PluginManager
         PluginManager pm = plugin.getServer().getPluginManager();
@@ -118,7 +127,7 @@ public final class MainPlugin extends JavaPlugin {
         items = new ItemParser(plugin).parseItemsFromConfig();
 
         //Sounds
-        soundFileHandler.parseSounds();
+        soundHandler.parseSounds();
 
         //Commands
         getCommand("powergrid").setExecutor(new mainCommandExecutor(plugin));
@@ -172,16 +181,25 @@ public final class MainPlugin extends JavaPlugin {
     }
 
     public void reload() {
+        // Plugin reload
+        plugin = this;
 
-        if (powerTransferTask != null) {
-            powerTransferTask.cancel();
-        }
+        //Instances
+        this.langFileHandler = new LangFileHandler(plugin);
+        this.itemFileHandler = new ItemFileHandler(plugin);
+        this.machineFileHandler = new MachineFileHandler(plugin);
+        this.soundHandler = new SoundHandler(plugin);
+        this.recipeHandler = new RecipeHandler(plugin);
+
+        this.database = new DatabaseConnection(plugin);
 
         //Files
         saveDefaultConfig();
         langFileHandler.setupLangFiles();
         itemFileHandler.setupItemFiles();
         machineFileHandler.setupMachineFiles();
+        soundHandler.setupSoundFile();
+        recipeHandler.setupRecipeFiles();
 
         //Database
         database.connect();
@@ -193,38 +211,8 @@ public final class MainPlugin extends JavaPlugin {
         this.wireDAO = new WireDAO(database.getConnection(), DB_TYPE, plugin);
         //this.relayDAO = new RelayDAO(database.getConnection(), DB_TYPE);
 
-        //PlayerUtility
-        this.playerUtility = new PlayerUtility(plugin);
-
-        //MOTD
-        Map<String, String> placeholder = new HashMap<>();
-        placeholder.put("{version}", plugin.getPluginMeta().getVersion());
-        placeholder.put("{fileHandlerStatus}", database.getStatus());
-        printLogs("info.startup", placeholder);
-
-        //PluginManager
-        PluginManager pm = plugin.getServer().getPluginManager();
-
         //Items
         items = new ItemParser(plugin).parseItemsFromConfig();
-
-        //Commands
-        getCommand("powergrid").setExecutor(new mainCommandExecutor(plugin));
-        getCommand("powergrid").setTabCompleter(new mainCommandTabber(plugin));
-
-        //Listeners
-        pm.registerEvents(new PlayerInteractListener(plugin), this);
-        pm.registerEvents(new BlockPlaceListener(plugin), this);
-        pm.registerEvents(new BlockBreakListener(plugin), this);
-        pm.registerEvents(new SlotSwitchListener(plugin), this);
-        pm.registerEvents(new InventoryClickListener(plugin), this);
-        pm.registerEvents(new PlayerDeathListener(plugin), this);
-        pm.registerEvents(new PlayerQuitListener(plugin), this);
-        pm.registerEvents(new PlayerTeleportationListener(plugin), this);
-
-        //Handlers
-        this.wireItemActions = new WireItemActions(plugin);
-
 
         //Tests
         new WireConnectionRunnable(plugin).runTaskTimer(this, 0L, 1L);
@@ -331,8 +319,8 @@ public final class MainPlugin extends JavaPlugin {
     }
 
 
-    public SoundFileHandler getSoundFileHandler() {
-        return soundFileHandler;
+    public SoundHandler getSoundFileHandler() {
+        return soundHandler;
     }
 
     public MachineFileHandler getMachineFileHandler() {

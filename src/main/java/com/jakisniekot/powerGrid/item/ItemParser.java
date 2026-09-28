@@ -31,14 +31,14 @@ public class ItemParser {
     }
 
     public Map<String, ItemStack> parseItemsFromConfig() {
-        plugin.printLogs("info.itemParsingg.start");
+        plugin.printLogs("info.itemParsing.start");
 
         Map<String, ItemStack> itemStack = new HashMap<>();
         for (String ID : itemFileHandler.getItemConfig().getKeys(false)) {
             itemStack.put(ID, parseItem(ID));
         }
 
-        plugin.printLogs("info.itemParsingg.end");
+        plugin.printLogs("info.itemParsing.end");
 
         return itemStack;
     }

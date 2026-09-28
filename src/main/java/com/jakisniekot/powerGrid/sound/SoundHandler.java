@@ -19,7 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-public class SoundFileHandler {
+public class SoundHandler {
 
     private File langFile;
     private FileConfiguration langConfig;
@@ -27,11 +27,11 @@ public class SoundFileHandler {
 
     private MainPlugin plugin;
 
-    public SoundFileHandler(MainPlugin plugin) {
+    public SoundHandler(MainPlugin plugin) {
         this.plugin = plugin;
     }
 
-    public void setupMachineFiles() {
+    public void setupSoundFile() {
         langFile = new File(plugin.getDataFolder(), "sound.yml");
 
         if (!langFile.exists()) {

@@ -1,17 +1,28 @@
 info:
   wireReload: "&7Reloaded &f{wiresReloaded} &ewires &7 which accumulated over &f{armorStandsRemoved} &eArmorStand"
   itemParsing:
-    start: "&fItem parsing &astarted&7!"
-    end: "&fItem parsing &cended&7!"
+    start: "&7Item &5parsing &astarted&7!"
+    end: "&7Item &5parsing &cended&7!"
 
     successful: "&7Item &f{ID} &aregistered successfully!"
-    warning: "&7Item &f{ID} &eregistered with warnings!"
-  soundParsing:
-    start: "&fSound parsing &astarted&7!"
-    end: "&fSound parsing &cended&7!"
+    warning: "&7Item &f{ID} &eregistered with warning(s)!"
 
+  soundParsing:
+    start: "&7Sound &5parsing &astarted&7!"
+    end: "&7Sound &5parsing &cended&7!"
     successful: "&7Sound &f{ID} &aregistered successfully!"
-    warning: "&7Sound &f{ID} &eregistered with warnings!"
+    warning: "&7Sound &f{ID} &eregistered with warning(s)!"
+
+  recipeParsing:
+    start: "&7Recipe &5parsing &astarted&7!"
+    end: "&7Recipe &5parsing &cended&7!"
+
+
+    defaultsNotLoaded: "&cCould not load the default recipes!"
+    folderError: "&cRecipe folder couldnt be detected!"
+    successful: "&7Recipe &f{ID} &aregistered successfully!"
+    warning: "&7Recipe &f{ID} &eregistered with a warning(s)!"
+    error: "&7Recipe &f{ID} &ccould not get registered due to an error!"
   startup:
     - ""
     - "&8==============================================================================="
@@ -90,5 +101,7 @@ utilItems:
     pull: "&7Connector: &cPULL"
     static: "&7Connector: &eSTATIC"
 
-
-
+command:
+  getSerializedItem:
+    success: "<click:open_url:'https://example.com'><aqua><u>Kliknij tutaj</u></aqua></click>"
+    noItem: "&cYou need to hold an item in your hand to use this command"
