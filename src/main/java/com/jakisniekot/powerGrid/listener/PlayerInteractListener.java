@@ -7,6 +7,7 @@ import com.jakisniekot.powerGrid.database.Connector;
 import com.jakisniekot.powerGrid.network.EnergyBlockUtil;
 import com.jakisniekot.powerGrid.particles.WireConnectionRunnable;
 import com.jakisniekot.powerGrid.util.LocationIDString;
+import org.apache.commons.lang3.ObjectUtils;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -22,6 +23,7 @@ import org.bukkit.util.Vector;
 import java.sql.Connection;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class PlayerInteractListener implements Listener {
 
@@ -106,21 +108,75 @@ public class PlayerInteractListener implements Listener {
 
                 break;
 
-            case "WIRE_WRENCH":
+            case "CONNECTOR_WRENCH":
                 if (event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
                 String id = LocationIDString.getString(event.getClickedBlock().getLocation());
                 Connector connector = plugin.getConnectorDAO().get(id);
 
+                plugin.getSoundFileHandler().playSound("wrenchUse", event.getClickedBlock().getLocation(), event.getPlayer());
+
                 if (connector != null) {
                     ConnectorTypes newType = connector.connectorTypes().next(); // STATIC -> PUSH -> PULL -> STATIC
                     plugin.getConnectorDAO().updateType(id, newType);
-                    event.getPlayer().sendMessage("Connector: " + newType.name());
+                    switch (newType) {
+                        case PULL:
+                            plugin.getPlayerUtility().actionbar(event.getPlayer(), plugin.getLang().getString("utilItems.connectorWrench.pull"), new HashMap<>());
+                            break;
+                        case PUSH:
+                            plugin.getPlayerUtility().actionbar(event.getPlayer(), plugin.getLang().getString("utilItems.connectorWrench.push"), new HashMap<>());
+                            break;
+                        case STATIC:
+                            plugin.getPlayerUtility().actionbar(event.getPlayer(), plugin.getLang().getString("utilItems.connectorWrench.static"), new HashMap<>());
+                            break;
+                    }
+
                 }
+
                 break;
             case "MULTIMETER":
                 if (event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
-                String locationString = LocationIDString.getString(event.getClickedBlock().getLocation());
-                EnergyBlockUtil energyBlockUtil = new EnergyBlockUtil();
+                if (event.getClickedBlock() == null) return;
+                Location location = event.getClickedBlock().getLocation();
+                id = LocationIDString.getString(event.getClickedBlock().getLocation());
+                connector = plugin.getConnectorDAO().get(id);
+                if (connector != null) {
+                    ConnectorTypes newType = connector.connectorTypes();
+                    switch (newType) {
+                        case PULL:
+                            plugin.getPlayerUtility().actionbar(event.getPlayer(), plugin.getLang().getString("utilItems.connectorWrench.pull"), new HashMap<>());
+                            break;
+                        case PUSH:
+                            plugin.getPlayerUtility().actionbar(event.getPlayer(), plugin.getLang().getString("utilItems.connectorWrench.push"), new HashMap<>());
+                            break;
+                        case STATIC:
+                            plugin.getPlayerUtility().actionbar(event.getPlayer(), plugin.getLang().getString("utilItems.connectorWrench.static"), new HashMap<>());
+                            break;
+                    }
+
+                    return;
+                }
+
+
+
+                long maxEnergy = EnergyBlockUtil.getMaxEnergy(location);
+
+                plugin.getSoundFileHandler().playSound("multimeterUse", location, event.getPlayer());
+                if (maxEnergy == 0) {
+                    plugin.getPlayerUtility().actionbar(event.getPlayer(), plugin.getLang().getString("utilItems.multimeter.notAnEnergyBlock"), new HashMap<>());
+                    return;
+                }
+
+                long energy = EnergyBlockUtil.getEnergy(location);
+                long input = EnergyBlockUtil.getInputTransferCap(location);
+                long output = EnergyBlockUtil.getOutputTransferCap(location);
+
+                Map<String, String> placeholder = new HashMap<>();
+                placeholder.put("{energy}", String.valueOf(energy));
+                placeholder.put("{maxEnergy}", String.valueOf(maxEnergy));
+                placeholder.put("{input}", String.valueOf(input));
+                placeholder.put("{output}", String.valueOf(output));
+
+                plugin.getPlayerUtility().actionbar(event.getPlayer(), plugin.getLang().getString("utilItems.multimeter.success"), placeholder);
 
                 break;
 

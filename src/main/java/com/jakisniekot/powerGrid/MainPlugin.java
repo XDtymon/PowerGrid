@@ -133,6 +133,7 @@ public final class MainPlugin extends JavaPlugin {
         pm.registerEvents(new PlayerDeathListener(plugin), this);
         pm.registerEvents(new PlayerQuitListener(plugin), this);
         pm.registerEvents(new PlayerTeleportationListener(plugin), this);
+        pm.registerEvents(new PlayerPickBlockListener(plugin), this);
 
         //Handlers
         this.wireItemActions = new WireItemActions(plugin);

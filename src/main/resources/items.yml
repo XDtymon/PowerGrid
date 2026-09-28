@@ -1,20 +1,20 @@
 #
 # UTIL
 #
-wire_wrench:
-  itemName: "&6ᴋʟᴜᴄᴢ ᴅᴏ ᴢᴌᴀᴄᴢʏ"
+connector_wrench:
+  itemName: "&6ᴋʟᴜᴄᴢ ᴅᴏ ᴢʟᴀᴄᴢʏ"
   lore:
-    - "&8&l| &7Używane do zamiany trybu connectorów"
+    - "&8&l| &r&7Używane do zamiany trybu connectorów"
   customModelData: 0
   material: STICK
 
-  powerItemType: WIRE_WRENCH
+  powerItemType: CONNECTOR_WRENCH
 multimeter:
   itemName: "&6ᴍᴜʟᴛɪᴍᴇᴛʀ"
   lore:
-    - "&8&l| &7Sprawdza przepływ, ilość oraz maks. jej wartość"
+    - "&8&l| &r&7Sprawdza przepływ, ilość oraz maks. jej wartość"
   customModelData: 0
-  material: STICK
+  material: TRIPWIRE_HOOK
 
   powerItemType: MULTIMETER
 

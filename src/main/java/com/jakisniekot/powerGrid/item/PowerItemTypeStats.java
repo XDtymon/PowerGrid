@@ -127,6 +127,12 @@ public boolean hasList(PersistentDataContainer pdc) {
             if (!itemSection.getStringList("lore").isEmpty()) {
                 itemMeta.lore(TextUtility.listReplacer(itemSection.getStringList("lore"), placeholder));
             }
+        } else if (
+                powerItemType == PowerItemType.CONNECTOR_WRENCH || powerItemType == PowerItemType.MULTIMETER
+        ) {
+            if (!itemSection.getStringList("lore").isEmpty()) {
+                itemMeta.lore(TextUtility.listReplacer(itemSection.getStringList("lore"), new HashMap<>()));
+            }
         }
 
         return itemMeta;

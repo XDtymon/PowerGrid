@@ -85,5 +85,10 @@ utilItems:
   multimeter:
     notAnEnergyBlock: "&cThis block does not contain energy"
     success: "&7Energy: &e{energy}&fW&8/&e{maxEnergy}&fW &8| &aInput: &e{input}&fW &8| &cOutput: &e{output}&fW"
+  connectorWrench:
+    push: "&7Connector: &aPUSH"
+    pull: "&7Connector: &cPULL"
+    static: "&7Connector: &eSTATIC"
+
 
 
