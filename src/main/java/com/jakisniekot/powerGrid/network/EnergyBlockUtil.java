@@ -1,13 +1,18 @@
 package com.jakisniekot.powerGrid.network;
 
 import com.jakisniekot.powerGrid.KeyUtil;
+import com.jakisniekot.powerGrid.util.LocationIDString;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.TileState;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Czyta / zapisuje pola energii (energy, max energy, input/output transfer cap) trzymane
@@ -51,6 +56,28 @@ public final class EnergyBlockUtil {
         setLong(location, KeyUtil.OutputTransferCapKey(), Math.max(0, value));
     }
 
+    public static void setInputItems(Location location, ItemStack[] items) {
+        setByteArray(location, KeyUtil.InputItemsKey(), ItemStack.serializeItemsAsBytes(items));
+    }
+
+    public static ItemStack[] getInputItems(Location location) {
+        byte[] data = getByteArray(location, KeyUtil.InputItemsKey(), new byte[]{});
+        return data != null
+                ? ItemStack.deserializeItemsFromBytes(data)
+                : new ItemStack[0];
+    }
+
+    public static void setOutputItems(Location location, ItemStack[] items) {
+        setByteArray(location, KeyUtil.OutputItemsKey(), ItemStack.serializeItemsAsBytes(items));
+    }
+
+    public static ItemStack[] getOutputItems(Location location) {
+        byte[] data = getByteArray(location, KeyUtil.OutputItemsKey(), new byte[]{});
+        return data != null
+                ? ItemStack.deserializeItemsFromBytes(data)
+                : new ItemStack[0];
+    }
+
     /**
      * Ile ten blok może realnie oddać teraz: nie więcej niż ma w zapasie i nie więcej
      * niż jego własny output transfer cap.
@@ -91,6 +118,21 @@ public final class EnergyBlockUtil {
         if (!(state instanceof TileState tileState)) return;
         tileState.getPersistentDataContainer().set(key, PersistentDataType.LONG, value);
         tileState.update();
+    }
+
+    private static void setByteArray(Location location, NamespacedKey key, byte[] bytes) {
+        Block block = location.getBlock();
+        BlockState state = block.getState();
+        if (!(state instanceof TileState tileState)) return;
+        tileState.getPersistentDataContainer().set(key, PersistentDataType.BYTE_ARRAY, bytes);
+        tileState.update();
+    }
+
+    private static byte[] getByteArray(Location location, NamespacedKey key, byte[] def) {
+        PersistentDataContainer pdc = getPdc(location);
+        if (pdc == null) return def;
+        byte[] value = pdc.get(key, PersistentDataType.BYTE_ARRAY);
+        return value == null ? def : value;
     }
 
     private static PersistentDataContainer getPdc(Location location) {

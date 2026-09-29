@@ -124,4 +124,18 @@ public class KeyUtil {
     public static NamespacedKey OutputTransferCapKey() {
         return new NamespacedKey("powergrid", "output_transfer_cap");
     }
+
+    /**
+     * Klucz itemow wejscia
+     */
+    public static NamespacedKey InputItemsKey() {
+        return new NamespacedKey("powergrid", "inputItems");
+    }
+
+    /**
+     * Klucz itemow wyjscia
+     */
+    public static NamespacedKey OutputItemsKey() {
+        return new NamespacedKey("powergrid", "outputItems");
+    }
 }
