@@ -100,6 +100,8 @@ public class ItemParser {
         if (itemSection.getString("powerItemType") != null) {
             if (itemSection.getString("powerItemType") == "NONE") {
 
+            } else if (itemSection.getString("powerItemType") == "MACHINE") {
+                
             } else {
                 try {
                     powerItemType = PowerItemType.valueOf(itemSection.getString("powerItemType"));
