@@ -22,4 +22,5 @@ databaseConnection:
   #forceURL: "jdbc:mysql://localhost:3306/db?useSSL=false&allowPublicKeyRetrieval=true"
 
 energy:
+  energySymbol: "&e⚡"
   transfer-interval-ticks: 1   # 1 = tick, 20 = once a second

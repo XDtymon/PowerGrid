@@ -1,46 +1,114 @@
-emptySlotItem:
-  material: LIGHT_GRAY_STAINED_GLASS_PANE
-  itemName: "&7"
-energyItemSlot:
-  
+#
+# Machines config
+#
 
-machines:
-  electric_furnace:
-    item: electric_furnance
-    energyStorage:
-      maximumEnergy: 100000
-      maxInputTransfer: 1000
-      maxOutputTransfer: 1000
-      slot: 52
+# ID
+pulverizer:
+  # ITEM FOR MACHINE
+  item: pulverizer_machine
+  # ENERGY STACK
+  energyStorage:
+    # If you want the machine to
+    # contain some amount of energy
+    # change the value of "energy"
+    energy: 0
+    # Maximal energy storage
+    maximumEnergy: 3000
+    # Maximal input transfer
+    maxInputTransfer: 40
+    # Maximal output transfer
+    maxOutputTransfer: 0
 
-    itemStorage:
-#     SLOT_IDS
-      itemInput1:
-        slotID: 10
-        itemSlotType: INPUT
-      itemInput2:
-        slotID: 11
-        itemSlotType: INPUT
-      itemInput3:
-        slotID: 12
-        itemSlotType: INPUT
-      itemOutput1:
-        slotID: 33
-        itemSlotType: OUTPUT
-    multiblock:
-      keys:
-        C: COPPER_BLOCK
-        M: MAGMA_BLOCK
-      structure:
-        1:
-          - "CCC"
-          - "CCC"
-          - "CCC"
-        2:
-          - "CCC"
-          - "CMC"
-          - "C@C"
-        3:
-          - "CCC"
-          - "CCC"
-          - "CCC"
+  # ITEM SLOTS
+  itemStorage:
+    #   SLOT_IDS
+    itemInput:
+      # slotIDs range from 1 to 54
+      slotID: 10
+      # itemSlotTypes:
+      # INPUT
+      # OUTPUT
+      itemSlotType: INPUT
+    catalizator:
+      slotID: 11
+      itemSlotType: INPUT
+    itemOutput1:
+      slotID: 33
+      itemSlotType: OUTPUT
+    itemOutput2:
+      slotID: 34
+      itemSlotType: OUTPUT
+    itemOutput3:
+      slotID: 35
+      itemSlotType: OUTPUT
+    itemOutput4:
+      slotID: 36
+      itemSlotType: OUTPUT
+      # MULTIBLOCK STRUCTURE
+      #multiblock: copper_furnace_structure
+
+composter:
+  item: composter_machine
+  energyStorage:
+    energy: 0
+    maximumEnergy: 2000
+    maxInputTransfer: 40
+    maxOutputTransfer: 0
+  itemStorage:
+    itemInput1:
+      slotID: 10
+      itemSlotType: INPUT
+    itemInput2:
+      slotID: 11
+      itemSlotType: INPUT
+    itemOutput1:
+      slotID: 33
+      itemSlotType: OUTPUT
+    itemOutput2:
+      slotID: 34
+      itemSlotType: OUTPUT
+    itemOutput3:
+      slotID: 35
+      itemSlotType: OUTPUT
+
+machine_press:
+  item: machine_press_machine
+  energyStorage:
+    energy: 0
+    maximumEnergy: 20000
+    maxInputTransfer: 400
+    maxOutputTransfer: 0
+  itemStorage:
+    itemInput1:
+      slotID: 10
+      itemSlotType: INPUT
+    itemInput2:
+      slotID: 11
+      itemSlotType: INPUT
+    itemOutput1:
+      slotID: 33
+      itemSlotType: OUTPUT
+    itemOutput2:
+      slotID: 34
+      itemSlotType: OUTPUT
+
+battery:
+  item: battery
+  energyStorage:
+    energy: 175000
+    maximumEnergy: 200000
+    maxInputTransfer: 60
+    maxOutputTransfer: 40
+  itemStorage: []
+
+coal_generator:
+  item: coal_generator_machine
+  energyStorage:
+    energy: 0
+    maximumEnergy: 240000
+    maxInputTransfer: 0
+    maxOutputTransfer: 160
+  itemStorage:
+    itemInput1:
+      slotID: 10
+      itemSlotType: INPUT

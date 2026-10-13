@@ -1,0 +1,15 @@
+energyFromCoal:
+  inputs:
+    # - /pg getParsedItem
+    1:
+      ==: org.bukkit.inventory.ItemStack
+      v: 3955
+      type: COAL
+      amount: 1
+
+  outputs: []
+
+  processTime: 450
+  energyPerTick: -80
+  machines:
+    - coal_generator

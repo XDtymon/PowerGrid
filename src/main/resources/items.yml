@@ -2,17 +2,18 @@
 # UTIL
 #
 connector_wrench:
-  itemName: "&6ᴋʟᴜᴄᴢ ᴅᴏ ᴢʟᴀᴄᴢʏ"
+  itemName: "&6ᴄᴏɴɴᴇᴄᴛᴏʀ ᴡʀᴇɴᴄʜ"
   lore:
-    - "&8&l| &r&7Używane do zamiany trybu connectorów"
+    - "&8&l| &r&7Used to change the connector state"
   customModelData: 0
   material: STICK
 
   powerItemType: CONNECTOR_WRENCH
 multimeter:
-  itemName: "&6ᴍᴜʟᴛɪᴍᴇᴛʀ"
+  itemName: "&6ᴍᴜʟᴛɪᴍᴇᴛᴇʀ"
   lore:
-    - "&8&l| &r&7Sprawdza przepływ, ilość oraz maks. jej wartość"
+    - "&8&l| &r&7Gives information about connection"
+    - "&8&l| &r&7"
   customModelData: 0
   material: TRIPWIRE_HOOK
 
@@ -25,10 +26,10 @@ multimeter:
 # WIRES
 #
 copper_wire:
-  itemName: "&#D07232ᴍɪᴇᴅᴢ&#D37033ɪ&#D66E33ᴀ&#D96B34ɴ&#DC6934ʏ &#E26535ᴋ&#E56336ᴀ&#E86036ʙ&#EB5E37ᴇ&#EE5C37ʟ"
+  itemName: "&#D07232ᴄ&#D37033ᴏ&#D66E33ᴘ&#D96B34ᴘ&#DC6934ᴇ&#DF6735ʀ &#E56336ᴡ&#E86036ɪ&#EB5E37ʀ&#EE5C37ᴇ"
   lore:
-    - "&8&l| &r&7Energia: &f%wattPerSecond%&eW"
-    - "&8&l| &r&7Maks. długość: &f%maxConnectionDistance%&em"
+    - "&8&l| &r&7Transfer: &f%wattPerSecond%%pg_energy_symbol%"
+    - "&8&l| &r&7Maximal length: &f%maxConnectionDistance%&em"
   customModelData: 0
   material: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOGUwMDlkOGJhN2M0ZGI3Yzk3ZTcwOGYxMDUzNzBjOGIwNDM2M2ZiNTJjMjIwMzljNWU1ZTVmZGE5YzQzMjQ1ZSJ9fX0=
 
@@ -41,10 +42,10 @@ copper_wire:
     - COPPER_BULB
 
 aluminium_wire:
-  itemName: "&#78D0D4ᴀ&#7DD1D5ʟ&#81D2D5ᴜ&#86D3D6ᴍ&#8BD4D6ɪ&#8FD5D7ɴ&#94D6D8ɪ&#99D7D8ᴏ&#9DD7D9ᴡ&#A2D8D9ʏ &#ABDADBᴋ&#B0DBDBᴀ&#B5DCDCʙ&#B9DDDCᴇ&#BEDEDDʟ"
+  itemName: "&#78D0D4ᴀ&#7DD1D5ʟ&#83D2D5ᴜ&#88D3D6ᴍ&#8ED4D7ɪ&#93D5D7ɴ&#98D6D8ɪ&#9ED8D9ᴜ&#A3D9DAᴍ &#AEDBDBᴡ&#B3DCDCɪ&#B9DDDCʀ&#BEDEDDᴇ"
   lore:
-    - "&8&l| &r&7Energia: &f%wattPerSecond%&eW"
-    - "&8&l| &r&7Maks. długość: &f%maxConnectionDistance%&em"
+    - "&8&l| &r&7Transfer: &f%wattPerSecond%%pg_energy_symbol%"
+    - "&8&l| &r&7Maximal length: &f%maxConnectionDistance%&em"
   customModelData: 0
   material: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvN2IyZjJiNzY0MmI1NDQ5MGI5ZmZhMWUwZTFiMjk2YWFkMmI3YTRlZGI5MzYxZTdlOGU5OTAzYjY0ZGJiODkzOSJ9fX0=
 
@@ -57,10 +58,10 @@ aluminium_wire:
     - DIORITE
     - QUARTZ_BLOCK
 electrum_wire:
-  itemName: "&#D3D478ᴇ&#D4D581ʟ&#D6D68Aᴇ&#D7D792ᴋ&#D9D89Bᴛ&#DAD9A4ʀ&#DBDAADʏ&#DDDBB5ᴛ&#DEDCBEᴏ&#E1E0B0ᴡ&#E3E4A2ʏ &#E9EC87ᴋ&#EBF079ᴀ&#EEF46Bʙ&#F0F85Dᴇ&#F3FC4Fʟ"
+  itemName: "&#D3D478ᴇ&#D6D775ʟ&#D8DB71ᴇ&#DBDE6Eᴄ&#DEE16Aᴛ&#E0E567ʀ&#E3E864ᴜ&#E6EB60ᴍ &#EBF259ᴡ&#EEF556ɪ&#F0F952ʀ&#F3FC4Fᴇ"
   lore:
-    - "&8&l| &r&7Energia: &f%wattPerSecond%&eW"
-    - "&8&l| &r&7Maks. długość: &f%maxConnectionDistance%&em"
+    - "&8&l| &r&7Transfer: &f%wattPerSecond%%pg_energy_symbol%"
+    - "&8&l| &r&7Maximal length: &f%maxConnectionDistance%&em"
   customModelData: 0
   material: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOGUwMDlkOGJhN2M0ZGI3Yzk3ZTcwOGYxMDUzNzBjOGIwNDM2M2ZiNTJjMjIwMzljNWU1ZTVmZGE5YzQzMjQ1ZSJ9fX0=
 
@@ -75,10 +76,10 @@ electrum_wire:
 # CONNECTORS
 #
 copper_connector:
-  itemName: "&#D07232ᴍɪᴇᴅᴢɪ&#D37033ᴀ&#D66E33ɴ&#D96B34ᴇ &#DF6735ᴢ&#E26535ʟ&#E56336ᴀ&#E86036ᴄ&#EB5E37ᴢ&#EE5C37ᴇ"
+  itemName: "&#D07232ᴄ&#D27132ᴏ&#D46F33ᴘ&#D66E33ᴘ&#D86C33ᴇ&#DA6B34ʀ &#DE6834ᴄ&#E06635ᴏ&#E26535ɴ&#E46335ɴ&#E66236ᴇ&#E86036ᴄ&#EA5F36ᴛ&#EC5D37ᴏ&#EE5C37ʀ"
   lore:
     #- "&8&l| &7=: &f%wattPerSecond%&eW"
-    - "&8&l| &r&7Maks. ilość połączeń: &f%maxConnectonAmount%"
+    - "&8&l| &r&7Maximal connection amount: &f%maxConnectionAmount%"
   customModelData: 0
   material: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOWRiOTZmYTMwNjNiNzkwNWFiYzA5YjRjOTAzODllYWRmYTFiZTFiZGVhMDZiMGVjNGFlOGQwZDA1ZTliZmRiMSJ9fX0=
 
@@ -88,10 +89,10 @@ copper_connector:
     - copper_wire
   blacklist: false
 aluminium_connector:
-  itemName: "&#78D0D4ᴀ&#7CD1D5ʟ&#81D2D5ᴜ&#85D3D6ᴍ&#8AD4D6ɪ&#8ED4D7ɴ&#92D5D7ɪ&#97D6D8ᴏ&#9BD7D9ᴡ&#9FD8D9ᴇ &#A8DADAᴢ&#ADDBDBʟ&#B1DBDBᴀ&#B5DCDCᴄ&#BADDDCᴢ&#BEDEDDᴇ"
+  itemName: "&#78D0D4ᴀ&#7CD1D5ʟ&#80D2D5ᴜ&#84D2D6ᴍ&#88D3D6ɪ&#8BD4D7ɴ&#8FD5D7ɪ&#93D5D8ᴜ&#97D6D8ᴍ &#9FD8D9ᴄ&#A3D9DAᴏ&#A7D9DAɴ&#ABDADBɴ&#AEDBDBᴇ&#B2DCDCᴄ&#B6DCDCᴛ&#BADDDDᴏ&#BEDEDDʀ"
   lore:
     #- "&8&l| &7=: &f%wattPerSecond%&eW"
-    - "&8&l| &r&7Maks. ilość połączeń: &f%maxConnectonAmount%"
+    - "&8&l| &r&7Maximal connection amount: &f%maxConnectionAmount%"
   customModelData: 0
   material: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzI4NmE0NmIzODMzZmU4MDY5Nzg4OWZjNzBlNWY1NWM4NWYzODE1YjNlZmE4ZTY4MWQ0OTMwZjM3ZDNmN2U3In19fQ==
   powerItemType: CONNECTOR
@@ -100,10 +101,10 @@ aluminium_connector:
     - aluminium_wire
   blacklist: false
 bronze_connector:
-  itemName: "&#AB8540ʙ&#AA873Bʀ&#A98A35ᴀ&#A88C30ᴢ&#A78E2Bᴏ&#A69026ᴡ&#A59320ᴇ &#B3A324ᴢ&#C1B12Cʟ&#D0BF35ᴀ&#DFCD3Eᴄ&#EDDB46ᴢ&#FCE94Fᴇ"
+  itemName: "&#AB8540ʙ&#B08C41ʀ&#B69242ᴏ&#BB9943ɴ&#C1A044ᴢ&#C6A645ᴇ &#D1B447ᴄ&#D6BA48ᴏ&#DCC149ɴ&#E1C84Aɴ&#E6CE4Bᴇ&#ECD54Cᴄ&#F1DC4Dᴛ&#F7E24Eᴏ&#FCE94Fʀ"
   lore:
     #- "&8&l| &7=: &f%wattPerSecond%&eW"
-    - "&8&l| &r&7Maks. ilość połączeń: &f%maxConnectonAmount%"
+    - "&8&l| &r&7Maximal connection amount: &f%maxConnectionAmount%"
   customModelData: 0
   material: eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTc2YmM2ODU0N2M3NmJhNDYyNTA4NTAyOTgwNDY0N2I4MmY4MTY3MDVjOGJiNjFlMzdkMTQ4NWE3NWM3MmM1ZiJ9fX0=
   powerItemType: CONNECTOR
@@ -117,54 +118,89 @@ bronze_connector:
 
 #INGOTS
 aluminium_ingot:
-  itemName: "&eSztabka Aluminium"
+  itemName: "&eAluminium Ingot"
   material: IRON_INGOT
   lore: []
   customModelData: 0
   powerItemType: NONE
 tin_ingot:
-  itemName: "&fSztabka Cyny"
+  itemName: "&fTin ingot"
   material: IRON_INGOT
   lore: []
   customModelData: 0
   powerItemType: NONE
 electrum_ingot:
-  itemName: "&#D3D478ѕ&#D4D581ᴢ&#D6D68Aᴛ&#D7D792ᴀ&#D9D89Bʙ&#DAD9A4ᴋ&#DBDAADᴀ &#DEDCBEᴇ&#E1E0B0ʟ&#E3E4A2ᴇ&#E6E894ᴋ&#E9EC87ᴛ&#EBF079ʀ&#EEF46Bʏ&#F0F85Dᴛ&#F3FC4Fᴜ"
+  itemName: "&#D3D478ᴇ&#D5D775ʟ&#D8DA72ᴇ&#DADD6Fᴄ&#DDE06Bᴛ&#DFE368ʀ&#E2E665ᴜ&#E4EA62ᴍ &#E9F05Cɪ&#ECF358ɴ&#EEF655ɢ&#F1F952ᴏ&#F3FC4Fᴛ"
   material: GOLD_INGOT
   lore: []
   customModelData: 0
   powerItemType: NONE
 bronze_ingot:
-  itemName: "&#AB8540S&#AA883Az&#A98A34t&#A88D2Ea&#A69027b&#A59221k&#A4951Ba &#C1B12Cb&#D0BF35r&#DFCD3Eą&#EDDB46z&#FCE94Fu"
+  itemName: "&#AB8540B&#B28E41r&#BA9743o&#C1A044n&#C8A945z&#D0B247e &#DFC54Ai&#E6CE4Bn&#EDD74Cg&#F5E04Eo&#FCE94Ft"
   material: COPPER_INGOT
   lore: []
   customModelData: 0
   powerItemType: NONE
 #NUGGETS
 tin_nugget:
-  itemName: "&fSamorodek Cyny"
+  itemName: "&fTin nugget"
   material: IRON_NUGGET
   lore: []
   customModelData: 0
   powerItemType: NONE
 aluminium_nugget:
-  itemName: "&fSamorodek Aluminium"
+  itemName: "&fAluminium nugget"
   material: IRON_NUGGET
   lore: []
   customModelData: 0
   powerItemType: NONE
 electrum_nugget:
-  itemName: "&#D3D478ѕ&#D4D580ᴀ&#D5D688ᴍ&#D7D78Fᴏ&#D8D897ʀ&#D9D89Fᴏ&#DAD9A7ᴅ&#DCDAAEᴇ&#DDDBB6ᴋ &#E0E0B2ᴇ&#E3E3A5ʟ&#E5E799ᴇ&#E7EA8Dᴋ&#EAEE80ᴛ&#ECF174ʀ&#EEF568ʏ&#F1F85Bᴛ&#F3FC4Fᴜ"
+  itemName: "&#D3D478ᴇ&#D5D775ʟ&#D8DA72ᴇ&#DADD6Fᴄ&#DCDF6Cᴛ&#DEE269ʀ&#E1E566ᴜ&#E3E864ᴍ &#E8EE5Eɴ&#EAF15Bᴜ&#ECF358ɢ&#EEF655ɢ&#F1F952ᴇ&#F3FC4Fᴛ"
   material: GOLD_NUGGET
   lore: []
   customModelData: 0
   powerItemType: NONE
+
 #
 # MACHINES
 #
-electric_furnance:
-  material: FURNACE
-  itemName: "&#EEA400E&#EE9E00l&#EF9800e&#EF9201k&#F08B01t&#F08501r&#F17F01y&#F17901c&#F27302z&#F26D02n&#F36702y &#F45A02P&#F45403i&#F54E03e&#F54803c"
+
+pulverizer_machine:
+  material: LODESTONE
+  itemName: "&ePulverizer"
   lore: []
   powerItemType: MACHINE
   customModelData: 0
+  machineID: pulverizer
+
+composter_machine:
+  material: COMPOSTER
+  itemName: "&eIndustrial Composter"
+  lore: []
+  powerItemType: MACHINE
+  customModelData: 0
+  machineID: composter
+
+machine_press_machine:
+  material: SMITHING_TABLE
+  itemName: "&eMachine Press"
+  lore: []
+  powerItemType: MACHINE
+  customModelData: 0
+  machineID: machine_press
+
+battery:
+  material: SEA_LANTERN
+  itemName: "&eBattery"
+  lore: []
+  powerItemType: MACHINE
+  customModelData: 0
+  machineID: battery
+
+coal_generator_machine:
+  material: BLAST_FURNACE
+  itemName: "&eCoal Geneator"
+  lore: []
+  powerItemType: MACHINE
+  customModelData: 0
+  machineID: coal_generator

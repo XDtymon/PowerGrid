@@ -32,13 +32,13 @@ cableBreakConnection:
 multimeterUse:
   playType: PLAYER
   type: minecraft:block.chain.fall
-  category: BLOCK
+  category: BLOCKS
   volume: 1.0
   pitch: 1.0
 
 wrenchUse:
   playType: PLAYER
   type: minecraft:block.anvil.land
-  category: BLOCK
+  category: BLOCKS
   volume: 0.4
   pitch: 1.6

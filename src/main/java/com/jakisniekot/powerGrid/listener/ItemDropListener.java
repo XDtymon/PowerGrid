@@ -1,7 +1,7 @@
 package com.jakisniekot.powerGrid.listener;
 
 import com.jakisniekot.powerGrid.MainPlugin;
-import com.jakisniekot.powerGrid.particles.WireConnectionRunnable;
+import com.jakisniekot.powerGrid.parse.particles.WireConnectionRunnable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;

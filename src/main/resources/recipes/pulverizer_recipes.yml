@@ -1,0 +1,23 @@
+#Inputs definition
+#You can define items using:
+# - /pg getParsedItem
+# - ITEM(item|amount) or ITEM(item) for single item where "item" is a material type (https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html)
+# - ITEMID(item|amount) for items defined in items.yml
+aluminiumFromDiorite:
+  inputs:
+    1: "ITEM(DIORITE|32)"
+  outputs:
+    1: "ITEMID(aluminium_nugget|1)"
+  processTime: 400
+  energyPerTick: 20
+  machines:
+    - pulverizer
+goldFromNetherrack:
+  inputs:
+    1: "ITEM(NETHERRACK|32)"
+  outputs:
+    1: "ITEM(GOLD_NUGGET|3)"
+  processTime: 1225
+  energyPerTick: 4
+  machines:
+    - pulverizer

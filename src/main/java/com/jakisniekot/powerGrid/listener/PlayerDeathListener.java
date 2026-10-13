@@ -1,13 +1,10 @@
 package com.jakisniekot.powerGrid.listener;
 
 import com.jakisniekot.powerGrid.MainPlugin;
-import com.jakisniekot.powerGrid.actions.wire.WireItemActions;
-import com.jakisniekot.powerGrid.particles.WireConnectionRunnable;
-import org.bukkit.entity.Player;
+import com.jakisniekot.powerGrid.parse.particles.WireConnectionRunnable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.inventory.InventoryClickEvent;
 
 public class PlayerDeathListener implements Listener {
     private MainPlugin plugin;

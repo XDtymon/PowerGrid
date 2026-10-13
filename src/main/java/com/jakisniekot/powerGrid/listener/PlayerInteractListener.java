@@ -1,13 +1,11 @@
 package com.jakisniekot.powerGrid.listener;
 
-import com.jakisniekot.powerGrid.KeyUtil;
+import com.jakisniekot.powerGrid.power.machine.tile.MachineTile;
+import com.jakisniekot.powerGrid.util.KeyUtil;
 import com.jakisniekot.powerGrid.MainPlugin;
-import com.jakisniekot.powerGrid.actions.connector.ConnectorTypes;
-import com.jakisniekot.powerGrid.database.Connector;
-import com.jakisniekot.powerGrid.network.EnergyBlockUtil;
-import com.jakisniekot.powerGrid.particles.WireConnectionRunnable;
-import com.jakisniekot.powerGrid.util.LocationIDString;
-import org.apache.commons.lang3.ObjectUtils;
+import com.jakisniekot.powerGrid.power.connector.ConnectorTypes;
+import com.jakisniekot.powerGrid.power.connector.Connector;
+import com.jakisniekot.powerGrid.parse.particles.WireConnectionRunnable;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -71,8 +69,9 @@ public class PlayerInteractListener implements Listener {
                         return;
                     }
 
-                    String locString = LocationIDString.getString(event.getInteractionPoint());
-                    Connector connector = plugin.getConnectorDAO().get(locString);
+                    if (event.getClickedBlock() == null) return;
+                    if (!plugin.getConnectorHandler().isConnector(event.getClickedBlock().getLocation())) return;
+                    Connector connector = plugin.getConnectorHandler().getConnector(event.getClickedBlock().getLocation());
 
                     if (connector == null) {
                         event.setCancelled(true);
@@ -81,7 +80,7 @@ public class PlayerInteractListener implements Listener {
 
                     String wireType = event.getItem().getItemMeta().getPersistentDataContainer().get(KeyUtil.ItemIDKey(), PersistentDataType.STRING);
                     List<String> allowedWireTypes = connector.allowedWires();
-                    boolean blacklist = plugin.getConnectorDAO().get(locString).blacklist();
+                    boolean blacklist = connector.blacklist();
 
                     if (blacklist) {
                         if (allowedWireTypes.contains(wireType)) {
@@ -97,10 +96,15 @@ public class PlayerInteractListener implements Listener {
 
                     event.setCancelled(true);
 
-                    plugin.getWireActions().addLocation(event.getPlayer(), getTargetLocation(event.getPlayer()), event.getItem());
+                    plugin.getWireActions().addLocation(
+                            event.getPlayer(),
+                            event.getClickedBlock().getLocation(),
+                            event.getItem()
+                    );
+
                 } else {
                     if (WireConnectionRunnable.isActive(event.getPlayer().getUniqueId())) {
-                        plugin.getPlayerUtility().actionbar(event.getPlayer(), plugin.getLang().getString("wire.actionbar.cancel"), new HashMap<>());
+                        plugin.getPlayerUtility().actionbar(event.getPlayer(), plugin.lang().getString("wire.actionbar.cancel"), new HashMap<>());
                         plugin.getWireActions().cancelConnection(event.getPlayer(), event.getItem());
                     }
 
@@ -110,73 +114,78 @@ public class PlayerInteractListener implements Listener {
 
             case "CONNECTOR_WRENCH":
                 if (event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
-                String id = LocationIDString.getString(event.getClickedBlock().getLocation());
-                Connector connector = plugin.getConnectorDAO().get(id);
+                Connector connector = plugin.getConnectorHandler().getConnector(event.getClickedBlock().getLocation());
 
                 plugin.getSoundFileHandler().playSound("wrenchUse", event.getClickedBlock().getLocation(), event.getPlayer());
 
                 if (connector != null) {
                     ConnectorTypes newType = connector.connectorTypes().next(); // STATIC -> PUSH -> PULL -> STATIC
-                    plugin.getConnectorDAO().updateType(id, newType);
+                    connector.nextConnectorType();
                     switch (newType) {
                         case PULL:
-                            plugin.getPlayerUtility().actionbar(event.getPlayer(), plugin.getLang().getString("utilItems.connectorWrench.pull"), new HashMap<>());
+                            plugin.getPlayerUtility().actionbar(event.getPlayer(), plugin.lang().getString("utilItems.connectorWrench.pull"), new HashMap<>());
                             break;
                         case PUSH:
-                            plugin.getPlayerUtility().actionbar(event.getPlayer(), plugin.getLang().getString("utilItems.connectorWrench.push"), new HashMap<>());
+                            plugin.getPlayerUtility().actionbar(event.getPlayer(), plugin.lang().getString("utilItems.connectorWrench.push"), new HashMap<>());
                             break;
                         case STATIC:
-                            plugin.getPlayerUtility().actionbar(event.getPlayer(), plugin.getLang().getString("utilItems.connectorWrench.static"), new HashMap<>());
+                            plugin.getPlayerUtility().actionbar(event.getPlayer(), plugin.lang().getString("utilItems.connectorWrench.static"), new HashMap<>());
                             break;
                     }
 
                 }
 
                 break;
+
             case "MULTIMETER":
                 if (event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
                 if (event.getClickedBlock() == null) return;
                 Location location = event.getClickedBlock().getLocation();
-                id = LocationIDString.getString(event.getClickedBlock().getLocation());
-                connector = plugin.getConnectorDAO().get(id);
-                if (connector != null) {
+
+                if (plugin.getConnectorHandler().isConnector(location)) {
+                    connector = plugin.getConnectorHandler().getConnector(location);
                     ConnectorTypes newType = connector.connectorTypes();
                     switch (newType) {
                         case PULL:
-                            plugin.getPlayerUtility().actionbar(event.getPlayer(), plugin.getLang().getString("utilItems.connectorWrench.pull"), new HashMap<>());
+                            plugin.getPlayerUtility().actionbar(event.getPlayer(), plugin.lang().getString("utilItems.connectorWrench.pull"), new HashMap<>());
                             break;
                         case PUSH:
-                            plugin.getPlayerUtility().actionbar(event.getPlayer(), plugin.getLang().getString("utilItems.connectorWrench.push"), new HashMap<>());
+                            plugin.getPlayerUtility().actionbar(event.getPlayer(), plugin.lang().getString("utilItems.connectorWrench.push"), new HashMap<>());
                             break;
                         case STATIC:
-                            plugin.getPlayerUtility().actionbar(event.getPlayer(), plugin.getLang().getString("utilItems.connectorWrench.static"), new HashMap<>());
+                            plugin.getPlayerUtility().actionbar(event.getPlayer(), plugin.lang().getString("utilItems.connectorWrench.static"), new HashMap<>());
                             break;
                     }
 
                     return;
                 }
 
+                if (plugin.getMachineTileHandler().isMachineTile(location)) {
 
+                    MachineTile machineTile = plugin.getMachineTileHandler().getMachineTile(location);
 
-                long maxEnergy = EnergyBlockUtil.getMaxEnergy(location);
+                    long maxEnergy = machineTile.energyStack.getMaxEnergy();
 
-                plugin.getSoundFileHandler().playSound("multimeterUse", location, event.getPlayer());
-                if (maxEnergy == 0) {
-                    plugin.getPlayerUtility().actionbar(event.getPlayer(), plugin.getLang().getString("utilItems.multimeter.notAnEnergyBlock"), new HashMap<>());
-                    return;
+                    plugin.getSoundFileHandler().playSound("multimeterUse", location, event.getPlayer());
+                    if (maxEnergy == 0) {
+                        plugin.getPlayerUtility().actionbar(event.getPlayer(), plugin.lang().getString("utilItems.multimeter.notAnEnergyBlock"), new HashMap<>());
+                        return;
+                    }
+
+                    long energy = machineTile.energyStack.getEnergy();
+                    long input = machineTile.energyStack.getMaxInputTransfer();
+                    long output = machineTile.energyStack.getMaxOutputTransfer();
+
+                    Map<String, String> placeholder = new HashMap<>();
+                    placeholder.put("{energy}", String.valueOf(energy));
+                    placeholder.put("{maxEnergy}", String.valueOf(maxEnergy));
+                    placeholder.put("{input}", String.valueOf(input));
+                    placeholder.put("{output}", String.valueOf(output));
+
+                    plugin.getPlayerUtility().actionbar(event.getPlayer(), plugin.lang().getString("utilItems.multimeter.success"), placeholder);
+
                 }
 
-                long energy = EnergyBlockUtil.getEnergy(location);
-                long input = EnergyBlockUtil.getInputTransferCap(location);
-                long output = EnergyBlockUtil.getOutputTransferCap(location);
-
-                Map<String, String> placeholder = new HashMap<>();
-                placeholder.put("{energy}", String.valueOf(energy));
-                placeholder.put("{maxEnergy}", String.valueOf(maxEnergy));
-                placeholder.put("{input}", String.valueOf(input));
-                placeholder.put("{output}", String.valueOf(output));
-
-                plugin.getPlayerUtility().actionbar(event.getPlayer(), plugin.getLang().getString("utilItems.multimeter.success"), placeholder);
 
                 break;
 
@@ -198,6 +207,12 @@ public class PlayerInteractListener implements Listener {
             return result.getHitBlock().getLocation().add(0.5, 0.5, 0.5);
         }
 
-        return eye.clone().add(direction.multiply(MAX_AIM_DISTANCE));
+        Location location = eye.clone().add(direction.multiply(MAX_AIM_DISTANCE));
+        return new Location(
+                location.getWorld(),
+                location.getBlockX() - 0.5,
+                location.getBlockY() - 0.5,
+                location.getBlockZ() - 0.5
+        );
     }
 }

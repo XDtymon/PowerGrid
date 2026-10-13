@@ -1,0 +1,17 @@
+copper_furnace_structure:
+  keys:
+    C: COPPER_BLOCK
+    M: MAGMA_BLOCK
+  structure:
+    1:
+      - "CCC"
+      - "CCC"
+      - "CCC"
+    2:
+      - "CCC"
+      - "CMC"
+      - "C@C"
+    3:
+      - "CCC"
+      - "CCC"
+      - "CCC"

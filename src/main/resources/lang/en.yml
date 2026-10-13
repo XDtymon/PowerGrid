@@ -1,40 +1,32 @@
 info:
   wireReload: "&7Reloaded &f{wiresReloaded} &ewires &7 which accumulated over &f{armorStandsRemoved} &eArmorStand"
-  itemParsing:
-    start: "&7Item &5parsing &astarted&7!"
-    end: "&7Item &5parsing &cended&7!"
-
-    successful: "&7Item &f{ID} &aregistered successfully!"
-    warning: "&7Item &f{ID} &eregistered with warning(s)!"
 
   soundParsing:
     start: "&7Sound &5parsing &astarted&7!"
     end: "&7Sound &5parsing &cended&7!"
     successful: "&7Sound &f{ID} &aregistered successfully!"
     warning: "&7Sound &f{ID} &eregistered with warning(s)!"
+  #DOZMIENAY
+# recipeParsing:
+#   start: "&eRecipe &5parsing &astarted&7!"
+#   end: "&eRecipe &5parsing &cended&7!"
 
-  recipeParsing:
-    start: "&7Recipe &5parsing &astarted&7!"
-    end: "&7Recipe &5parsing &cended&7!"
 
 
-    defaultsNotLoaded: "&cCould not load the default recipes!"
-    folderError: "&cRecipe folder couldnt be detected!"
-    successful: "&7Recipe &f{ID} &aregistered successfully!"
-    warning: "&7Recipe &f{ID} &eregistered with a warning(s)!"
-    error: "&7Recipe &f{ID} &ccould not get registered due to an error!"
+#   successful: "&eRecipe &f{ID} &aregistered successfully!"
+#   warning: "&eRecipe &f{ID} &eregistered with a warning(s)!"
+#   error: "&eRecipe &f{ID} &ccould not get registered due to an error!"
   startup:
     - ""
     - "&8==============================================================================="
     - "                                                                        "
-    - '      &#FF9B00&l  ____    ___  __        __ _____  ____    ____  ____   ___  ____    '
-    - '      &#E58608&l |  _ \  / _ \ \ \      / /| ____||  _ \  / ___||  _ \ |_ _||  _ \   '
-    - '      &#CB7110&l | |_) || | | | \ \ /\ / / |  _|  | |_) || |  _ | |_) | | | | | | |  '
-    - '      &#B05B18&l |  __/ | |_| |  \ V  V /  | |___ |  _ < | |_| ||  _ <  | | | |_| |  '
-    - '      &#964620&l |_|     \___/    \_/\_/   |_____||_| \_\ \____||_| \_\|___||____/   '
+    - '&#FF9B00&l     ___   ___  __      __ ___  ___   ___  ___  ___  ___    '
+    - '&#E58608&l    | _ \ / _ \ \ \    / /| __|| _ \ / __|| _ \|_ _||   \   '
+    - '&#CB7110&l    |  _/| (_) | \ \/\/ / | _| |   /| (_ ||   / | | | |) |  '
+    - '&#B05B18&l    |_|   \___/   \_/\_/  |___||_|_\ \___||_|_\|___||___/   '
     - "                                                                        "
-    - "                           &7Version: &e{version}                          "
-    - "                               &8&oBy JakisNieKot                              "
+    - "        &7Version: &e{version}                          "
+    - "            &8&oBy JakisNieKot                              "
     - ""
     - " {fileHandlerStatus}               "
     - ""
@@ -60,6 +52,8 @@ info:
     motd: "&#FF9B00Database: {status} &8| &7DatabaseName: &f{name} &8| &7User: &f{user} &8| &7Password: &f{password} &8| &7Port: &f{port}"
 
 debugLog:
+  machinePlaced: "&7Added machine with &f{locString} &7to the database!"
+  machineRemoved: "&7Removed machine with &f{locString} &7from the database!"
   connectorPlaced: "&7Added connector with &f{locString} &7to the database!"
   connectorRemoved: "&7Removed connector with &f{locString} &7from the database!"
   wire:
@@ -80,6 +74,7 @@ wire:
       alreadyConnected: "&cThis connection is already established"
 
 errors:
+  noPAPI: "&ePlaceholderAPI has not been registered on the server, some features might not work!"
   database:
     noConnection: "&7Database isnt connected properly, &caborting action"
 
@@ -102,6 +97,119 @@ utilItems:
     static: "&7Connector: &eSTATIC"
 
 command:
+  recipe:
+    print:
+      main:
+      - ""
+      - "&6&l{recipeID}&7: "
+      - ""
+      - "&7Inputs:"
+      - "{INPUTS}"
+      - "&7Outputs:"
+      - "{OUTPUTS}"
+      - "&7Energy usage: &f{energyUsage}%pg_energy_symbol%"
+      - "&7Process time: &f{processTime}&et"
+      - "&7Machines:"
+      - "{MACHINES}"
+      item: " &8- &e{amount}&fx {name}"
+      machine: "&8- &e{machine}"
+
   getSerializedItem:
-    success: "<click:open_url:'https://example.com'><aqua><u>Kliknij tutaj</u></aqua></click>"
+    success: "&7Skopiuj &9{item} &7jako StringList"
     noItem: "&cYou need to hold an item in your hand to use this command"
+
+parsing:
+
+  start:
+    - "&8=============================================="
+    - "             &a&lPARSING STARTED"
+    - "&8=============================================="
+  finish:
+    - ""
+    - "&8=============================================="
+    - "             &c&lPARSING FINISHED"
+    - "&8=============================================="
+    - ""
+
+  level:
+    severe: "&c[SEVERE] &r"
+    warning: "&e[WARNING] &r"
+    info: "&a[INFO] &r"
+    none: ""
+
+
+  item:
+    separator:
+      - ""
+      - "&8--------------------------------------"
+      - "&3&lITEMS"
+      - "&8--------------------------------------"
+
+    success: "&3Item &8- &f{ID}&7 &7has been registered &asuccessfully!"
+
+    nullMaterial: "&3Item &8- &f{ID}&7's material is &cnull&7, &cforcing &6STONE&7..."
+    powerItemTypeError: "&3Item &8- &f{ID}&7's powerItemType is &cnull, &cforcing &6NONE&7..."
+    itemNameError: "&3Item &8- &f{ID}&7's itemName is &cnull"
+
+
+    fatal: "&3Item &8- &f{ID}&7 encountered an &cfatal error!"
+
+  recipe:
+    separator:
+      - ""
+      - "&8--------------------------------------"
+      - "&e&lRECIPES"
+      - "&8--------------------------------------"
+
+    success: "&eRecipe &8- &f{ID}&7 has been registered &asuccessfully!"
+
+    noProcessTime: "&eRecipe &8- &f{ID}&7 has &cno process time set! &7Forcing &620t&7..."
+    inputItemsError: "&eRecipe &8- &f{ID}&7 has its input section &cfaulty registered! &cSkipping..."
+    outputItemsError: "&eRecipe &8- &f{ID}&7 has its output section &cfaulty registered! &cSkipping..."
+    dupedRecipeName: "&eRecipe &8- &f{ID}&7's recipe name is &eduped! &cSkipping..."
+
+    fatal:
+      defaultsNotLoaded: "&eRecipe &cCould not load the default recipes!"
+      folderError: "&eRecipe &cRecipe folder couldnt be detected!"
+
+  sound:
+    separator:
+      - ""
+      - "&8--------------------------------------"
+      - "&d&lSOUNDS"
+      - "&8--------------------------------------"
+
+    success: "&dSound &8- &f{ID}&7 has been registered &asuccessfully!"
+
+    noPitchSet: "&dSound &8- &f{ID}&7's pitch is &cnull! &7Forcing &61.0f&7..."
+    noVolumeSet: "&dSound &8- &f{ID}&7's volume is &cnull! &7Forcing &61.0f&7..."
+    noSoundCategory: "&dSound &8- &f{ID}&7's category is &cnull! &7Forcing &6MASTER&7..."
+    noPlayType: "&dSound &8- &f{ID}&7's playType is &cnull! &7Forcing &6WORLD&7..."
+
+    fatal:
+      noSoundType: "&dSound &8- &f{ID}&7's sound type is &cnull! &7Skipping..."
+
+  machine:
+    separator:
+      - ""
+      - "&8--------------------------------------"
+      - "&5&lMACHINES"
+      - "&8--------------------------------------"
+
+    success: "&5Machine &8- &f{ID}&7 has been registered &asuccessfully!"
+    noInputs: "&5Machine &8- &f{ID}&7 does not have any input slots"
+    noOutputs: "&5Machine &8- &f{ID}&7 does not have any output slots"
+    noMaxEnergy: "&5Machine &8- &f{ID}&7's maxEnergy is &cnull"
+    customEnergyAmount: "&5Machine &8- &f{ID}&7 has a custom &eenergy &7base set"
+    noMaxInputTransfer: "&5Machine &8- &f{ID}&7's maxInputTransfer is &cnull"
+    noMaxOutputTransfer: "&5Machine &8- &f{ID}&7's maxOutputTransfer is &cnull"
+    noItemSlotType: "&5Machine &8- &f{ID}&7's itemStorage has a &climbo-state &7slot! &7Forcing &6INPUT&7..."
+    noSection: "&5Machine &8- &f{ID}&7`s itemStorage is &cnull!"
+
+    fatal:
+      itemSlotDupedID: "&5Machine &8- &f{ID}&7`s slots have their ID &cduped! &7Skipping..."
+      itemSlotNoID: "&5Machine &8- &f{ID}&7`s slots have their ID set as &cnull! &7Skipping..."
+
+
+loading:
+  wireDisplays: ""

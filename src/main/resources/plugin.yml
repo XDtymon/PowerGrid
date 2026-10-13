@@ -7,6 +7,9 @@ api-version: '26.2'
 load: POSTWORLD
 
 authors: [ JakisNieKot ]
+
+depend: [PlaceholderAPI]
+
 permissions:
   powergrid.admin:
     default: op

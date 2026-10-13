@@ -1,44 +1,45 @@
 package com.jakisniekot.powerGrid;
 
-import com.jakisniekot.powerGrid.actions.wire.WireItemActions;
+import com.destroystokyo.paper.profile.PlayerProfile;
+import com.destroystokyo.paper.profile.ProfileProperty;
+import com.jakisniekot.powerGrid.power.displays.wire.WireDisplays;
+import com.jakisniekot.powerGrid.power.displays.wire.WireItemActions;
 import com.jakisniekot.powerGrid.command.mainCommandExecutor;
 import com.jakisniekot.powerGrid.command.mainCommandTabber;
-import com.jakisniekot.powerGrid.database.ConnectorDAO;
-import com.jakisniekot.powerGrid.database.DatabaseConnection;
-//import com.jakisniekot.powerGrid.database.RelayDAO;
-import com.jakisniekot.powerGrid.database.Wire;
-import com.jakisniekot.powerGrid.database.WireDAO;
-import com.jakisniekot.powerGrid.item.ItemFileHandler;
-import com.jakisniekot.powerGrid.item.ItemParser;
-import com.jakisniekot.powerGrid.lang.LangFileHandler;
+import com.jakisniekot.powerGrid.power.connector.ConnectorDAO;
+import com.jakisniekot.powerGrid.power.connector.ConnectorHandler;
+import com.jakisniekot.powerGrid.parse.exceptions.ErrorHandler;
+import com.jakisniekot.powerGrid.parse.item.ItemHandler;
 import com.jakisniekot.powerGrid.listener.*;
-import com.jakisniekot.powerGrid.machine.MachineFileHandler;
-import com.jakisniekot.powerGrid.network.PowerNetworkManager;
-import com.jakisniekot.powerGrid.network.PowerTransferTask;
-import com.jakisniekot.powerGrid.particles.WireConnectionRunnable;
-import com.jakisniekot.powerGrid.recipe.RecipeHandler;
-import com.jakisniekot.powerGrid.sound.SoundHandler;
-import com.jakisniekot.powerGrid.util.ConsoleColors;
-import com.jakisniekot.powerGrid.util.LocationIDString;
-import com.jakisniekot.powerGrid.util.PlayerUtility;
-import com.jakisniekot.powerGrid.util.TextUtility;
+import com.jakisniekot.powerGrid.power.machine.MachineDAO;
+import com.jakisniekot.powerGrid.power.machine.MachineTileHandler;
+import com.jakisniekot.powerGrid.power.machine.MachineTypeHandler;
+import com.jakisniekot.powerGrid.power.network.NetworkManager;
+import com.jakisniekot.powerGrid.power.network.NetworkTickTask;
+import com.jakisniekot.powerGrid.parse.particles.WireConnectionRunnable;
+import com.jakisniekot.powerGrid.parse.placeholders.NewPlaceholders;
+import com.jakisniekot.powerGrid.parse.recipe.RecipeHandler;
+import com.jakisniekot.powerGrid.parse.sounds.SoundHandler;
+import com.jakisniekot.powerGrid.power.wire.Wire;
+import com.jakisniekot.powerGrid.power.wire.WireDAO;
+import com.jakisniekot.powerGrid.util.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.sql.Connection;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.regex.Pattern;
 import net.kyori.adventure.text.Component;
@@ -49,26 +50,32 @@ public final class MainPlugin extends JavaPlugin {
     private MainPlugin plugin;
 
     private LangFileHandler langFileHandler;
-    private ItemFileHandler itemFileHandler;
-    private MachineFileHandler machineFileHandler;
-    private SoundHandler soundHandler;
-    private RecipeHandler recipeHandler;
 
     private WireItemActions wireItemActions;
 
-    private DatabaseConnection database;
+    private DatabaseHandler database;
 
+    private ErrorHandler errorHandler;
+    private ItemHandler itemHandler;
+    private RecipeHandler recipeHandler;
+    private SoundHandler soundHandler;
+    private MachineTypeHandler machineTypeHandler;
+
+    private MachineTileHandler machineTileHandler;
+    private ConnectorHandler connectorHandler;
 
     private ConnectorDAO connectorDAO;
-    //private RelayDAO relayDAO;
+    private MachineDAO machineDAO;
     private WireDAO wireDAO;
 
-    private PowerNetworkManager powerNetworkManager;
-    private BukkitTask powerTransferTask;
+    private NetworkManager networkManager;
+    private BukkitTask networkTickTask;
+
+    private WireDisplays wireDisplays;
 
     private PlayerUtility playerUtility;
 
-    private Map<String, ItemStack> items;
+    public Map<String, ItemStack> items;
 
     private static final Pattern HEX_PATTERN = Pattern.compile("&#([A-Fa-f0-9]{6})");
     private final MiniMessage miniMessage = MiniMessage.miniMessage();
@@ -78,20 +85,37 @@ public final class MainPlugin extends JavaPlugin {
         // Plugin startup logic
         plugin = this;
 
-        //INSTANCES
-        this.langFileHandler = new LangFileHandler(plugin);
-        this.itemFileHandler = new ItemFileHandler(plugin);
-        this.machineFileHandler = new MachineFileHandler(plugin);
-        this.soundHandler = new SoundHandler(plugin);
-        this.recipeHandler = new RecipeHandler(plugin);
-
-        this.database = new DatabaseConnection(plugin);
-
         //CONFIG
         saveDefaultConfig();
 
+        //INSTANCES
+        this.langFileHandler = new LangFileHandler(plugin);
+
+        this.database = new DatabaseHandler(plugin);
+
+        this.itemHandler = new ItemHandler(plugin);
+        this.recipeHandler = new RecipeHandler(plugin);
+        this.errorHandler = new ErrorHandler(plugin);
+        this.soundHandler = new SoundHandler(plugin);
+        this.machineTypeHandler = new MachineTypeHandler(plugin);
+        this.machineTileHandler = new MachineTileHandler(plugin);
+        this.connectorHandler = new ConnectorHandler(plugin);
+
+        this.networkManager = new NetworkManager(plugin);
+
+        this.wireDisplays = new WireDisplays(plugin);
+
         //LANG
         langFileHandler.setupLangFiles();
+
+        if (getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+            new NewPlaceholders(this).register();
+        } else {
+            printLogs("errors.noPAPI");
+        }
+
+        //Util
+        warmUpProfiles();
 
         //MOTD
         Map<String, String> placeholder = new HashMap<>();
@@ -104,30 +128,41 @@ public final class MainPlugin extends JavaPlugin {
         database.createTables();
 
         //Other Files
-        itemFileHandler.setupItemFiles();
-        machineFileHandler.setupMachineFiles();
-        soundHandler.setupSoundFile();
+        itemHandler.setupItemFiles();
         recipeHandler.setupRecipeFiles();
+        soundHandler.setupSoundFile();
+        machineTypeHandler.setupMachineFiles();
 
+        //DAOs
         String DB_TYPE = getConfig().getString("databaseType");
-
         this.connectorDAO = new ConnectorDAO(database.getConnection(), DB_TYPE, plugin);
         this.wireDAO = new WireDAO(database.getConnection(), DB_TYPE, plugin);
-        //this.relayDAO = new RelayDAO(database.getConnection(), DB_TYPE);
+        this.machineDAO = new MachineDAO(database.getConnection(), DB_TYPE, plugin);
+
+        //Power Related Instances
+        connectorHandler.addFromDB();
+        networkManager.loadFromDB();
+
+        new NetworkTickTask(this, networkManager, 1).start();
 
         //PlayerUtility
         this.playerUtility = new PlayerUtility(plugin);
 
-
-
         //PluginManager
         PluginManager pm = plugin.getServer().getPluginManager();
 
-        //Items
-        items = new ItemParser(plugin).parseItemsFromConfig();
-
-        //Sounds
+        //Parsing
+        printLogs("parsing.start");
+        printLogs("parsing.item.separator");
+        itemHandler.parseItems();
+        printLogs("parsing.recipe.separator");
+        recipeHandler.parseRecipes();
+        printLogs("parsing.sound.separator");
         soundHandler.parseSounds();
+        printLogs("parsing.machine.separator");
+        machineTypeHandler.parseMachines();
+
+        printLogs("parsing.finish");
 
         //Commands
         getCommand("powergrid").setExecutor(new mainCommandExecutor(plugin));
@@ -147,28 +182,11 @@ public final class MainPlugin extends JavaPlugin {
         //Handlers
         this.wireItemActions = new WireItemActions(plugin);
 
-
-        //Tests
+        //Tasks
         new WireConnectionRunnable(plugin).runTaskTimer(this, 0L, 1L);
 
         //Wires
         reloadWires();
-
-        //Power network
-        this.powerNetworkManager = new PowerNetworkManager(plugin, connectorDAO, wireDAO);
-        // czekamy aż chunki z reloadWires się załadują / wpiszą do bazy, zanim policzymy sieci
-        Bukkit.getScheduler().runTaskLater(plugin, powerNetworkManager::rebuildFromDatabase, 20L * 5 + 1L);
-        this.powerTransferTask = PowerTransferTask.start(plugin, powerNetworkManager);
-        /*
-        for (World world : Bukkit.getWorlds()) {
-            for (Entity entity : world.getEntitiesByClass(ArmorStand.class)) {
-                PersistentDataContainer pdc = entity.getPersistentDataContainer();
-                if (pdc.has(KeyUtil.FirstWireStandKey())) {
-                    entity.remove();
-                }
-            }
-        }
-         */
 
 
     }
@@ -176,102 +194,32 @@ public final class MainPlugin extends JavaPlugin {
     @Override
     public void onDisable() {
         // Plugin shutdown logic
-
+        plugin.machineDAO.saveAllMachinery();
+        plugin.connectorDAO.saveAllConnectors();
 
     }
 
     public void reload() {
-        // Plugin reload
-        plugin = this;
 
-        //Instances
-        this.langFileHandler = new LangFileHandler(plugin);
-        this.itemFileHandler = new ItemFileHandler(plugin);
-        this.machineFileHandler = new MachineFileHandler(plugin);
-        this.soundHandler = new SoundHandler(plugin);
-        this.recipeHandler = new RecipeHandler(plugin);
-
-        this.database = new DatabaseConnection(plugin);
-
-        //Files
-        saveDefaultConfig();
-        langFileHandler.setupLangFiles();
-        itemFileHandler.setupItemFiles();
-        machineFileHandler.setupMachineFiles();
-        soundHandler.setupSoundFile();
-        recipeHandler.setupRecipeFiles();
-
-        //Database
-        database.connect();
-        database.createTables();
-
-        String DB_TYPE = getConfig().getString("databaseType");
-
-        this.connectorDAO = new ConnectorDAO(database.getConnection(), DB_TYPE, plugin);
-        this.wireDAO = new WireDAO(database.getConnection(), DB_TYPE, plugin);
-        //this.relayDAO = new RelayDAO(database.getConnection(), DB_TYPE);
-
-        //Items
-        items = new ItemParser(plugin).parseItemsFromConfig();
-
-        //Tests
-        new WireConnectionRunnable(plugin).runTaskTimer(this, 0L, 1L);
-
-        //Wires
-        reloadWires();
     }
 
-    public void printLogs(String messageID) {
-        Object object;
-        if (getLang().getStringList(messageID).isEmpty()) {
-            object = getLang().getString(messageID);
-        } else {
-            object = getLang().getStringList(messageID);
-        }
+    /**
+     * Tylko poto zeby sie pozbyc tego \/
+     * Environment[sessionHost=https://sessionserver.mojang.com, servicesHost=https://api.minecraftservices.com, profilesHost=https://api.mojang.com, name=PROD]
+     */
+    private void warmUpProfiles() {
+        ItemStack dummy = new ItemStack(Material.PLAYER_HEAD);
+        SkullMeta meta = (SkullMeta) dummy.getItemMeta();
 
-        if (object instanceof String s) {
-            plugin.getLogger().log(Level.INFO, ConsoleColors.colorize(s));
-        } else {
-            assert object != null;
-            for (String line : (List<String>) object) {
-                plugin.getLogger().log(Level.INFO, ConsoleColors.colorize(line));
+        PlayerProfile profile = Bukkit.createProfile(UUID.randomUUID(), "warmup");
+        profile.setProperty(new ProfileProperty("textures", "e30=")); // pusty JSON w base64
+        meta.setPlayerProfile(profile);
 
-            }
-        }
-    }
-
-    public void printLogs(String messageID, Map<String, String> placeholders) {
-
-        Object object;
-        if (getLang().getStringList(messageID).isEmpty()) {
-            object = getLang().getString(messageID);
-        } else {
-            object = getLang().getStringList(messageID);
-        }
-
-        if (object == null)  {
-            plugin.getLogger().log(Level.INFO, ("Missing message: "+messageID));
-            return;
-        }
-
-        if (object instanceof String s) {
-            for (Map.Entry<String, String> entry : placeholders.entrySet()) {
-                s = s.replace(entry.getKey(), entry.getValue());
-            }
-            plugin.getLogger().log(Level.INFO, ConsoleColors.colorize(s));
-        } else {
-            for (String line : (List<String>) object) {
-                for (Map.Entry<String, String> entry : placeholders.entrySet()) {
-                    line = line.replace(entry.getKey(), entry.getValue());
-                }
-                plugin.getLogger().log(Level.INFO, ConsoleColors.colorize(line));
-
-            }
-        }
+        dummy.setItemMeta(meta);
     }
 
     private void reloadWires() {
-        List<Wire> wires = wireDAO.getAll();
+        List<Wire> wires = plugin.getWireDAO().getAll();
         int wiresReloaded = wires.size();
         int armorStandsRemoved = 0;
 
@@ -304,7 +252,7 @@ public final class MainPlugin extends JavaPlugin {
             }
         }
 
-        Bukkit.getScheduler().runTaskLater(plugin, wireDAO::reinstateWires, 20L * 5);
+        wireDisplays.reinstateWires();
 
         Map<String, String> placeholder = new HashMap<>();
         placeholder.put("{wiresReloaded}", String.valueOf(wiresReloaded));
@@ -318,13 +266,28 @@ public final class MainPlugin extends JavaPlugin {
         }
     }
 
+    public ErrorHandler errorHandler() {
+        return errorHandler;
+    }
+
+    public RecipeHandler recipes() {
+        return recipeHandler;
+    }
 
     public SoundHandler getSoundFileHandler() {
         return soundHandler;
     }
 
-    public MachineFileHandler getMachineFileHandler() {
-        return machineFileHandler;
+    public MachineTypeHandler getMachineTypeHandler() {
+        return machineTypeHandler;
+    }
+
+    public MachineTileHandler getMachineTileHandler() {
+        return machineTileHandler;
+    }
+
+    public ConnectorHandler getConnectorHandler() {
+        return connectorHandler;
     }
 
     public PlayerUtility getPlayerUtility() {
@@ -334,17 +297,21 @@ public final class MainPlugin extends JavaPlugin {
     public ConnectorDAO getConnectorDAO() {
         return connectorDAO;
     }
-    /*
-        public RelayDAO getRelayDAO() {
-            return relayDAO;
-        }
-     */
+
+    public MachineDAO getMachineDAO() {
+        return machineDAO;
+    }
+
     public WireDAO getWireDAO() {
         return wireDAO;
     }
 
-    public PowerNetworkManager getPowerNetworkManager() {
-        return powerNetworkManager;
+    public WireDisplays getWireDisplays() {
+        return wireDisplays;
+    }
+
+    public NetworkManager networkManager() {
+        return networkManager;
     }
 
     public WireItemActions getWireActions() {
@@ -359,15 +326,12 @@ public final class MainPlugin extends JavaPlugin {
         return langFileHandler;
     }
 
-    public ItemFileHandler getItemFileHandler() {
-        return itemFileHandler;
-    }
-
     public List<String> getItemsList() {
         return new ArrayList<>(items.keySet());
     }
 
     public ItemStack getItemFromID(String id) {
+        if (items.get(id) == null) return new ItemStack(Material.AIR);
         return items.get(id).clone();
     }
 
@@ -375,19 +339,88 @@ public final class MainPlugin extends JavaPlugin {
         return items.containsKey(id);
     }
 
-    public FileConfiguration getLang() {
+    public FileConfiguration lang() {
         return langFileHandler.getLang();
     }
 
     public Component getMessage(String key, Map<String, String> placeholders) {
-        String msg = getLang().getString(key, "Missing message: " + key);
-        return TextUtility.stringReplacer(msg, placeholders);
+        String msg = lang().getString(key);
+        if (msg == null) return TextUtility.color(key, placeholders);
+        return TextUtility.color(msg, placeholders);
     }
 
     public Component getMessage(String key) {
-        String msg = getLang().getString(key, "Missing message: " + key);
+        String msg = lang().getString(key);
+        if (msg == null) return TextUtility.color(key);
         return TextUtility.color(msg);
     }
 
+    public List<Component> getMessageList(String key) {
+        List<String> list = lang().getStringList(key);
+        if (list.isEmpty()) return new ArrayList<>();
+        return TextUtility.colorList(list);
+    }
 
+    public List<Component> getMessageList(String key, Map<String , String> placeholder) {
+        List<String> list = lang().getStringList(key);
+        if (list.isEmpty()) return new ArrayList<>();
+        return TextUtility.colorList(list, placeholder);
+    }
+
+    public void printMessage(Player player, List<Component> list) {
+        for (Component component : list) {
+            player.sendMessage(component);
+        }
+    }
+
+    public void printLogs(String messageID) {
+        List<String> lines = lang().getStringList(messageID);
+
+        if (lines.isEmpty()) {
+            String single = lang().getString(messageID);
+            if (single == null) {
+                plugin.getLogger().log(Level.INFO, ("Missing message: "+messageID));
+                return;
+            }
+            lines = List.of(single);
+        }
+
+        lines.forEach(this::printTextLogs);
+    }
+
+    public void printTextLogs(String message) {
+        plugin.getLogger().log(Level.INFO, ConsoleColors.colorize(message));
+    }
+
+    private List<String> getLines(String messageID) {
+        List<String> lines = lang().getStringList(messageID);
+        if (!lines.isEmpty()) return lines;
+
+        String single = lang().getString(messageID);
+        return single == null ? List.of() : List.of(single);
+    }
+
+    private String applyPlaceholders(String line, Map<String, String> placeholders) {
+        for (Map.Entry<String, String> entry : placeholders.entrySet()) {
+            line = line.replace(entry.getKey(), entry.getValue());
+        }
+        return line;
+    }
+
+    public void printLogs(String messageID, Map<String, String> placeholders) {
+        List<String> lines = getLines(messageID);
+
+        if (lines.isEmpty()) {
+            String single = lang().getString(messageID);
+            if (single == null) {
+                plugin.getLogger().log(Level.INFO, ("Missing message: "+messageID));
+                return;
+            }
+            lines = List.of(single);
+        }
+
+        for (String line : lines) {
+            plugin.getLogger().log(Level.INFO, ConsoleColors.colorize(applyPlaceholders(line, placeholders)));
+        }
+    }
 }

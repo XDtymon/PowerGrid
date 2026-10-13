@@ -1,11 +1,10 @@
 package com.jakisniekot.powerGrid.util;
 
-import com.jakisniekot.powerGrid.MainPlugin;
+import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.md_5.bungee.api.ChatColor;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,62 +24,62 @@ public class TextUtility {
 
     }
 
-    public static String stringReplacer(String text, Map<String, String> placeholders, boolean consoleTEXT) {
+    public static String consoleString(String text, Map<String, String> placeholders) {
         for (Map.Entry<String, String> entry : placeholders.entrySet()) {
             text = text.replace(entry.getKey(), entry.getValue());
         }
 
-        if (consoleTEXT) {
-            return ConsoleColors.colorize(text);
-        } else {
-            return colorLegacy(text);
-        }
+        return ConsoleColors.colorize(text);
     }
 
-    public static Component stringReplacer(String text, Map<String, String> placeholders) {
-        for (Map.Entry<String, String> entry : placeholders.entrySet()) {
+    public static String replace(String text, Map<String, String> placeholder) {
+       text = PlaceholderAPI.setPlaceholders(null, text);
+       if (placeholder.isEmpty()) return text;
+       for (Map.Entry<String, String> entry : placeholder.entrySet()) {
             text = text.replace(entry.getKey(), entry.getValue());
         }
 
-        return color(text);
+       return text;
     }
 
-    public static List<String> listReplacer(List<String> list, Map<String, String> placeholders, boolean consoleTEXT) {
-        List<String> newList = new ArrayList<>();
-
-        for (String text : list) {
-            for (Map.Entry<String, String> entry : placeholders.entrySet()) {
-                text = text.replace(entry.getKey(), entry.getValue());
-            }
-
-            if (consoleTEXT) {
-                newList.add(ConsoleColors.colorize(text));
-            } else {
-                newList.add(colorLegacy(text));
-            }
-
-        }
-
-
-        return newList;
-    }
-
-    public static List<Component> listReplacer(List<String> list, Map<String, String> placeholders) {
+    public static List<Component> colorList(List<String> list) {
         List<Component> newList = new ArrayList<>();
+        for (String line : list) {
+            newList.add(color(line));
+        }
+        return newList;
+    }
 
-        for (String text : list) {
-            for (Map.Entry<String, String> entry : placeholders.entrySet()) {
-                text = text.replace(entry.getKey(), entry.getValue());
-            }
+    public static List<Component> colorList(List<String> list, Map<String , String> placeholder) {
+        List<Component> newList = new ArrayList<>();
+        for (String line : list) {
+            newList.add(color(line, placeholder));
+        }
+        return newList;
+    }
 
-            newList.add(color(text));
+    public static Component color(String text, Map<String, String> placeholder) {
+
+        text = replace(text, placeholder);
+
+        if (text == null || text.isEmpty()) {
+            return Component.empty();
         }
 
+        // &7, &a, &l, &n itd.
+        text = replaceHexColors(text);
+        text = replaceLegacyColors(text);
 
-        return newList;
+        // #00ff00 -> <#00ff00>
+
+        // Parsowanie MiniMessage
+        return MINI_MESSAGE.deserialize(text).decoration(TextDecoration.ITALIC, false);
     }
 
         public static Component color(String text) {
+
+            text = PlaceholderAPI.setPlaceholders(null, text);
+
             if (text == null || text.isEmpty()) {
                 return Component.empty();
             }

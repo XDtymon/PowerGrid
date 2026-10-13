@@ -1,25 +1,21 @@
 package com.jakisniekot.powerGrid.command;
 
 import com.jakisniekot.powerGrid.MainPlugin;
-import com.jakisniekot.powerGrid.machine.multiblock.Multiblock;
-import com.sun.jdi.IntegerType;
+import com.jakisniekot.powerGrid.parse.recipe.Recipe;
+import com.jakisniekot.powerGrid.power.network.EnergyNetwork;
+import com.jakisniekot.powerGrid.util.LocationUtil;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
-import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.util.RayTraceResult;
-import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.Arrays;
-import java.util.List;
 
 public class mainCommandExecutor implements CommandExecutor {
 
@@ -83,12 +79,12 @@ public class mainCommandExecutor implements CommandExecutor {
                 case "reload":
                     break;
                 case "save":
+                    plugin.getConnectorDAO().saveAllConnectors();
+                    plugin.getMachineDAO().saveAllMachinery();
                     break;
                 case "machine":
-                    if (args.length != 3) {
-                        return true;
-                    }
 
+                    /*
                     if (args[1].toLowerCase().equals("structure")) {
                         String machineId = args[2];
 
@@ -152,7 +148,62 @@ public class mainCommandExecutor implements CommandExecutor {
                         return true;
                     }
 
+                     */
 
+                case "recipes":
+                    if (args.length == 1) {
+                        for (String id : plugin.recipes().getRecipes().keySet()) {
+                            Recipe recipe = plugin.recipes().getRecipe(id);
+                            plugin.recipes().printRecipe(recipe, player);
+                        }
+                    } else if (args.length == 2) {
+                        String recipeID = args[1];
+                        if (!plugin.recipes().isAnRecipe(recipeID)) {
+
+                            return true;
+                        }
+
+                        Recipe recipe = plugin.recipes().getRecipe(recipeID);
+                        plugin.recipes().printRecipe(recipe, player);
+                    }
+
+                    break;
+                case "item":
+                    if (args.length == 2) {
+                        switch (args[1].toLowerCase()) {
+                            case "parse":
+                                org.bukkit.inventory.ItemStack itemStack = player.getInventory().getItemInMainHand();
+
+                                YamlConfiguration yaml = new YamlConfiguration();
+                                yaml.set("item", itemStack);
+
+                                String serialized = yaml.saveToString()
+                                        .replaceFirst("^item:\\s*\\n", "");
+
+                                Component message = plugin.getMessage("command.getSerializedItem.success")
+                                        .clickEvent(ClickEvent.copyToClipboard(serialized))
+                                        .hoverEvent(HoverEvent.showText(
+                                                Component.text("Kliknij, aby skopiować item")
+                                        ));
+
+                                player.sendMessage(message);
+                                break;
+                        }
+
+                    }
+                    break;
+                case "network":
+                    if (args.length == 2) {
+                        switch (args[1].toLowerCase()) {
+                            case "info":
+                                Location location = LocationUtil.getTargetLocation(player);
+                                if (location == null) return true;
+                                EnergyNetwork net = plugin.networkManager().getNetworkAt(location);
+                                if (net != null) net.diagnose(plugin, 1).forEach(sender::sendMessage);
+                                break;
+                        }
+                    }
+                    break;
             }
 
 

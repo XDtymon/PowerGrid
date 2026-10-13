@@ -1,8 +1,9 @@
 package com.jakisniekot.powerGrid.listener;
 
-import com.jakisniekot.powerGrid.KeyUtil;
+import com.jakisniekot.powerGrid.power.connector.Connector;
+import com.jakisniekot.powerGrid.util.KeyUtil;
 import com.jakisniekot.powerGrid.MainPlugin;
-import com.jakisniekot.powerGrid.actions.connector.ConnectorTypes;
+import com.jakisniekot.powerGrid.power.connector.ConnectorTypes;
 import com.jakisniekot.powerGrid.util.LocationIDString;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -76,8 +77,7 @@ public class BlockPlaceListener implements Listener {
                 placeholder.put("{locString}", locString);
                 plugin.printLogs("debugLog.connectorPlaced", placeholder);
 
-
-                plugin.getConnectorDAO().insertOrUpdate(
+                Connector connector = new Connector(
                         locString,
                         maxConnections,
                         allowedWires,
@@ -86,10 +86,29 @@ public class BlockPlaceListener implements Listener {
                         itemID
                 );
 
+                plugin.getConnectorHandler().addConnector(
+                        event.getBlockPlaced().getLocation(),
+                        connector
+                );
+
+                plugin.networkManager().registerConnector(
+                        event.getBlockPlaced().getLocation()
+                );
+
                 break;
-            case "RELAY":
+            case "MACHINE":
+                String machineID = pdc.get(KeyUtil.MachineIDKey(), PersistentDataType.STRING);
+                locString = LocationIDString.getString(event.getBlockPlaced().getLocation());
+
+
+                placeholder = new HashMap<>();
+                placeholder.put("{locString}", locString);
+                plugin.printLogs("debugLog.machinePlaced", placeholder);
+
+                plugin.getMachineTileHandler().newMachineTile(machineID, event.getBlockPlaced().getLocation());
+
                 break;
-            case "WIRE":
+            case "WIRE", "CONNECTOR_WRENCH", "MULTIMETER":
                 event.setCancelled(true);
                 break;
 
@@ -100,4 +119,6 @@ public class BlockPlaceListener implements Listener {
                 break;
         }
     }
+
+
 }

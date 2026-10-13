@@ -31,7 +31,7 @@ public class mainCommandTabber implements TabCompleter {
 
         List<String> items = plugin.getItemsList();
 
-        Set<String> machines = plugin.getMachineFileHandler().getMachineTypesConfig().getConfigurationSection("machines").getKeys(false);
+        Set<String> recipeIDs = plugin.recipes().getRecipes().keySet();
 
         List<String> players = new ArrayList<>();
         for (Player player : Bukkit.getOnlinePlayers()) {
@@ -45,7 +45,9 @@ public class mainCommandTabber implements TabCompleter {
                     completions.add("give");
                     completions.add("reload");
                     completions.add("save");
+                    completions.add("recipes");
                     completions.add("machine");
+                    completions.add("item");
                 } else {
                     switch (args[0].toLowerCase()) {
                         case "give":
@@ -66,11 +68,21 @@ public class mainCommandTabber implements TabCompleter {
                             break;
                         case "machine":
                             if (args.length == 2) {
-                                completions.add("structure");
+                                //completions.add("save");
+                                //completions.add("structure");
                             } else if (args.length == 3) {
-                                completions.addAll(machines);
+                                //completions.addAll(machines);
                             }
                             break;
+                        case "recipes":
+                            completions.addAll(recipeIDs);
+                            break;
+                        case "item":
+                            if (args.length == 2) {
+                                completions.add("parse");
+                            }
+                            break;
+
                     }
                 }
             }
