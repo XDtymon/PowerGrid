@@ -14,6 +14,7 @@ import com.jakisniekot.powerGrid.listener.*;
 import com.jakisniekot.powerGrid.power.machine.MachineDAO;
 import com.jakisniekot.powerGrid.power.machine.MachineTileHandler;
 import com.jakisniekot.powerGrid.power.machine.MachineTypeHandler;
+import com.jakisniekot.powerGrid.power.machine.gui.GuiConfig;
 import com.jakisniekot.powerGrid.power.network.NetworkManager;
 import com.jakisniekot.powerGrid.power.network.NetworkTickTask;
 import com.jakisniekot.powerGrid.parse.particles.WireConnectionRunnable;
@@ -23,10 +24,8 @@ import com.jakisniekot.powerGrid.parse.sounds.SoundHandler;
 import com.jakisniekot.powerGrid.power.wire.Wire;
 import com.jakisniekot.powerGrid.power.wire.WireDAO;
 import com.jakisniekot.powerGrid.util.*;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
+import me.clip.placeholderapi.PlaceholderAPI;
+import org.bukkit.*;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
@@ -72,6 +71,7 @@ public final class MainPlugin extends JavaPlugin {
     private BukkitTask networkTickTask;
 
     private WireDisplays wireDisplays;
+    private GuiConfig guiConfig;
 
     private PlayerUtility playerUtility;
 
@@ -97,6 +97,7 @@ public final class MainPlugin extends JavaPlugin {
         this.recipeHandler = new RecipeHandler(plugin);
         this.errorHandler = new ErrorHandler(plugin);
         this.soundHandler = new SoundHandler(plugin);
+
         this.machineTypeHandler = new MachineTypeHandler(plugin);
         this.machineTileHandler = new MachineTileHandler(plugin);
         this.connectorHandler = new ConnectorHandler(plugin);
@@ -105,13 +106,24 @@ public final class MainPlugin extends JavaPlugin {
 
         this.wireDisplays = new WireDisplays(plugin);
 
+
         //LANG
         langFileHandler.setupLangFiles();
 
         if (getServer().getPluginManager().isPluginEnabled("PlaceholderAPI")) {
             new NewPlaceholders(this).register();
+            this.guiConfig = GuiConfig.parse(
+                    getConfig().getConfigurationSection(""),
+                    plugin.getLogger(),
+                    s -> PlaceholderAPI.setPlaceholders((OfflinePlayer) null, s)
+            );
         } else {
             printLogs("errors.noPAPI");
+            this.guiConfig = GuiConfig.parse(
+                    getConfig().getConfigurationSection("defaultMachine"),
+                    getLogger(),
+                    s -> s
+            );
         }
 
         //Util
@@ -333,6 +345,10 @@ public final class MainPlugin extends JavaPlugin {
     public ItemStack getItemFromID(String id) {
         if (items.get(id) == null) return new ItemStack(Material.AIR);
         return items.get(id).clone();
+    }
+
+    public GuiConfig getGuiConfig() {
+        return guiConfig;
     }
 
     public boolean isExistingItem(String id) {

@@ -24,3 +24,36 @@ databaseConnection:
 energy:
   energySymbol: "&e⚡"
   transfer-interval-ticks: 1   # 1 = tick, 20 = once a second
+
+
+defaultMachine:
+  layout:
+    keys:
+      #E = Energy Display Item
+      #I = Info Item
+      p: BLACK_STAINED_GLASS_PANE
+      b: LIGHT_GRAY_STAINED_GLASS_PANE
+    structure:
+      - "bbbbbbbbb"
+      - "bbbbbbbbb"
+      - "bbbbbbbbb"
+      - "bbbbbbbbb"
+      - "ppppppppp"
+      - "bbbbbbbbb"
+  items:
+    energyItem:
+      material: LIGHT
+      itemName: "&6Energy Info:"
+      lore:
+        - "&7 Energy: &f{energy}%pg_energy_symbol%&7/&f{maxEnergy}%%pg_energy_symbol%"
+        - "&7 Input: &f{energyInput}%pg_energy_symbol%"
+        - "&7 Output: &f{energyOutput}%pg_energy_symbol%"
+      customModelData: 0
+    infoItem:
+      material: COMPARATOR
+      itemName: "&6Energy Info:"
+      lore:
+        - "&7 Energy: &f{energy}%pg_energy_symbol%&7/&f{maxEnergy}%%pg_energy_symbol%"
+        - "&7 Input: &f{energyInput}%pg_energy_symbol%"
+        - "&7 Output: &f{energyutput}%pg_energy_symbol%"
+      customModelData: 0

@@ -29,18 +29,26 @@ java {
 
 // ---- Numeracja builda ----
 val buildPropsFile = file("build.properties")
-val buildProps = Properties()
-buildProps.load(FileInputStream(buildPropsFile))
+val buildProps = Properties().apply {
+    buildPropsFile.inputStream().use { load(it) }
+}
 
-val buildNumber: Int = Integer.parseInt(buildProps.getProperty("build.number", "1"))
-val versionNumber: Int = Integer.parseInt(buildProps.getProperty("version.number", "1"))
+val buildNumber: Int = buildProps.getProperty("build.number", "1").toInt()
+val versionNumber: Int = buildProps.getProperty("build.version", "1").toInt()
 
 version = "ALPHA-BUILD-${versionNumber.toString().padStart(2, '0')}.${buildNumber.toString().padStart(4, '0')}"
 
 tasks.register("incrementBuildNumber") {
+    val propsFile = layout.projectDirectory.file("build.properties").asFile
+
     doLast {
-        buildProps.setProperty("build.number", (buildNumber + 1).toString())
-        buildProps.store(FileOutputStream(buildPropsFile), null)
+        val props = Properties()
+        propsFile.inputStream().use { props.load(it) }
+
+        val current = props.getProperty("build.number", "1").toInt()
+        props.setProperty("build.number", (current + 1).toString())
+
+        propsFile.outputStream().use { props.store(it, null) }
     }
 }
 

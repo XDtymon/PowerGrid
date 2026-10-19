@@ -27,7 +27,9 @@ public class MachineTileHandler extends BukkitRunnable {
     @Override
     public void run() {
         for (MachineTile tile : machineTiles.values()) {
+            if (tile.gui != null) tile.gui.pull();
             tick(tile);
+            if (tile.gui != null) tile.gui.refresh();
         }
     }
 
@@ -56,7 +58,7 @@ public class MachineTileHandler extends BukkitRunnable {
                 }
 
                 machineTile.progress.add();
-
+                machineTile.energyStack.setEnergy(machineTile.energyStack.getEnergy() - recipe.getEnergyPerTick());
             } else {
                 machineTile.state = MachineState.ENERGY_ERROR;
             }
@@ -130,7 +132,7 @@ public class MachineTileHandler extends BukkitRunnable {
     }
 
     public void removeMachineTile(Location location) {
-        machineTiles.remove(location);
+        MachineTile tile = machineTiles.remove(location);
     }
 
 }

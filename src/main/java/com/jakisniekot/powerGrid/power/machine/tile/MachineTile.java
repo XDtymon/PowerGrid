@@ -2,8 +2,10 @@ package com.jakisniekot.powerGrid.power.machine.tile;
 
 import com.jakisniekot.powerGrid.power.machine.EnergyStack;
 import com.jakisniekot.powerGrid.power.machine.MachineType;
+import com.jakisniekot.powerGrid.power.machine.gui.MachineGui;
 import com.jakisniekot.powerGrid.util.BlockPos;
 import org.bukkit.inventory.ItemStack;
+import xyz.xenondevs.invui.gui.Gui;
 
 public class MachineTile extends MachineType {
 
@@ -15,6 +17,7 @@ public class MachineTile extends MachineType {
     public ItemStack[] input;
     public ItemStack[] output;
     public MachineState state = MachineState.IDLE;
+    public MachineGui gui;
     public boolean dirty;
 
     public MachineTile(

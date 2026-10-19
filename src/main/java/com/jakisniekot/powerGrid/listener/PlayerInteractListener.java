@@ -1,5 +1,7 @@
 package com.jakisniekot.powerGrid.listener;
 
+import com.jakisniekot.powerGrid.power.machine.gui.GuiConfig;
+import com.jakisniekot.powerGrid.power.machine.gui.MachineGui;
 import com.jakisniekot.powerGrid.power.machine.tile.MachineTile;
 import com.jakisniekot.powerGrid.util.KeyUtil;
 import com.jakisniekot.powerGrid.MainPlugin;
@@ -7,6 +9,7 @@ import com.jakisniekot.powerGrid.power.connector.ConnectorTypes;
 import com.jakisniekot.powerGrid.power.connector.Connector;
 import com.jakisniekot.powerGrid.parse.particles.WireConnectionRunnable;
 import org.bukkit.Location;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -61,6 +64,21 @@ public class PlayerInteractListener implements Listener {
         }
 
         PersistentDataContainer pdc = itemStack.getItemMeta().getPersistentDataContainer();
+
+        Block block = event.getClickedBlock();
+        Location location = null;
+        if (block != null) location = block.getLocation();
+
+        if (location != null && plugin.getMachineTileHandler().isMachineTile(location)) {
+            MachineGui.open(
+                    event.getPlayer(),
+                    plugin.getMachineTileHandler().getMachineTile(location),
+                    plugin.getGuiConfig(),
+                    plugin.getLogger()
+            );
+            event.setCancelled(true);
+        }
+
 
         switch (pdc.get(KeyUtil.TypeKey(), PersistentDataType.STRING)) {
             case "WIRE":
@@ -140,7 +158,6 @@ public class PlayerInteractListener implements Listener {
             case "MULTIMETER":
                 if (event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
                 if (event.getClickedBlock() == null) return;
-                Location location = event.getClickedBlock().getLocation();
 
                 if (plugin.getConnectorHandler().isConnector(location)) {
                     connector = plugin.getConnectorHandler().getConnector(location);
